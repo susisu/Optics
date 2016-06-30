@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test/optics.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/susisu/Optics/issues"
   },
-  "homepage": "https://github.com/susisu/Optics#readme"
+  "homepage": "https://github.com/susisu/Optics#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "jsdoc": "^3.4.0",
+    "mocha": "^2.5.3"
+  }
 }
