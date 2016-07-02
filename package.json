@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/optics.js"
+    "test": "mocha test/optics.js",
+    "doc": "jsdoc lib -c jsdoc.conf.json"
   },
   "repository": {
     "type": "git",
