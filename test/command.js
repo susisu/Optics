@@ -12,6 +12,46 @@ const command = require("../lib/command.js");
 const output  = require("../lib/output.js");
 
 describe("command", () => {
+    describe("Argument", () => {
+        describe("constructor(placeholder, reader)", () => {
+            it("should create a new Argument instance");
+            it("should throw an error if 'placeholder' is not a string");
+            it("should throw an error if 'reader' is not a function");
+        });
+
+        describe("#isRequired()", () => {
+            it("should always return true");
+        });
+
+        describe("#toPlaceholder()", () => {
+            it("should return the placeholder wrapped by angles < and >");
+        });
+
+        describe("#getDefaultValue()", () => {
+            it("should throw an error");
+        });
+    });
+
+    describe("OptionalArgument", () => {
+        describe("constructor(placeholder, defaultVal, reader)", () => {
+            it("should create a new OptionalArgument instance");
+            it("should throw an error if 'placeholder' is not a string");
+            it("should throw an error if 'reader' is not a function");
+        });
+
+        describe("#isRequired()", () => {
+            it("should always return false");
+        });
+
+        describe("#toPlaceholder()", () => {
+            it("should return the placeholder wrapped by brackets [ and ]");
+        });
+
+        describe("#getDefaultValue()", () => {
+            it("should return the default value specified at a constructor");
+        });
+    });
+
     describe("CommandBase", () => {
         describe("constructor()", () => {
             it("should create a new CommandBase instance", () => {
