@@ -44,7 +44,16 @@ describe("command", () => {
         });
 
         describe("#toPlaceholder()", () => {
-            it("should return the placeholder wrapped by angles < and >");
+            it("should return the placeholder wrapped by angles < and >", () => {
+                {
+                    let arg = new command.Argument("foobar", x => x);
+                    expect(arg.toPlaceholder()).to.equal("<foobar>");
+                }
+                {
+                    let arg = new command.Argument("nyancat", x => x);
+                    expect(arg.toPlaceholder()).to.equal("<nyancat>");
+                }
+            });
         });
 
         describe("#getDefaultValue()", () => {
