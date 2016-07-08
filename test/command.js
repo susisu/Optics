@@ -57,7 +57,10 @@ describe("command", () => {
         });
 
         describe("#getDefaultValue()", () => {
-            it("should throw an error");
+            it("should throw an error", () => {
+                let arg = new command.Argument("foobar", x => x);
+                expect(() => { arg.getDefaultValue(); }).to.throw(Error);
+            });
         });
     });
 
