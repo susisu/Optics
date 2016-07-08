@@ -14,9 +14,26 @@ const output  = require("../lib/output.js");
 describe("command", () => {
     describe("Argument", () => {
         describe("constructor(placeholder, reader)", () => {
-            it("should create a new Argument instance");
-            it("should throw an error if 'placeholder' is not a string");
-            it("should throw an error if 'reader' is not a function");
+            it("should create a new Argument instance", () => {
+                let arg = new command.Argument("foobar", x => x);
+                expect(arg).to.be.an.instanceOf(command.Argument);
+            });
+
+            it("should throw an error if 'placeholder' is not a string", () => {
+                expect(() => { new command.Argument(null, x => x); }).to.throw(Error);
+                expect(() => { new command.Argument(undefined, x => x); }).to.throw(Error);
+                expect(() => { new command.Argument(3.14, x => x); }).to.throw(Error);
+                expect(() => { new command.Argument(true, x => x); }).to.throw(Error);
+                expect(() => { new command.Argument({}, x => x); }).to.throw(Error);
+            });
+
+            it("should throw an error if 'reader' is not a function", () => {
+                expect(() => { new command.Argument("foobar", null); }).to.throw(Error);
+                expect(() => { new command.Argument("foobar", undefined); }).to.throw(Error);
+                expect(() => { new command.Argument("foobar", 3.14); }).to.throw(Error);
+                expect(() => { new command.Argument("foobar", true); }).to.throw(Error);
+                expect(() => { new command.Argument("foobar", {}); }).to.throw(Error);
+            });
         });
 
         describe("#isRequired()", () => {
