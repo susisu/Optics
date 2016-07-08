@@ -37,7 +37,10 @@ describe("command", () => {
         });
 
         describe("#isRequired()", () => {
-            it("should always return true");
+            it("should always return true", () => {
+                let arg = new command.Argument("foobar", x => x);
+                expect(arg.isRequired()).to.be.true;
+            });
         });
 
         describe("#toPlaceholder()", () => {
