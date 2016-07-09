@@ -66,9 +66,26 @@ describe("command", () => {
 
     describe("OptionalArgument", () => {
         describe("constructor(placeholder, defaultVal, reader)", () => {
-            it("should create a new OptionalArgument instance");
-            it("should throw an error if 'placeholder' is not a string");
-            it("should throw an error if 'reader' is not a function");
+            it("should create a new OptionalArgument instance", () => {
+                let arg = new command.OptionalArgument("foobar", "none", x => x);
+                expect(arg).to.be.an.instanceOf(command.OptionalArgument);
+            });
+
+            it("should throw an error if 'placeholder' is not a string", () => {
+                expect(() => { new command.OptionalArgument(null, "none", x => x); }).to.throw(Error);
+                expect(() => { new command.OptionalArgument(undefined, "none", x => x); }).to.throw(Error);
+                expect(() => { new command.OptionalArgument(3.14, "none", x => x); }).to.throw(Error);
+                expect(() => { new command.OptionalArgument(true, "none", x => x); }).to.throw(Error);
+                expect(() => { new command.OptionalArgument({}, "none", x => x); }).to.throw(Error);
+            });
+
+            it("should throw an error if 'reader' is not a function", () => {
+                expect(() => { new command.Argument("foobar", "none", null); }).to.throw(Error);
+                expect(() => { new command.Argument("foobar", "none", undefined); }).to.throw(Error);
+                expect(() => { new command.Argument("foobar", "none", 3.14); }).to.throw(Error);
+                expect(() => { new command.Argument("foobar", "none", true); }).to.throw(Error);
+                expect(() => { new command.Argument("foobar", "none", {}); }).to.throw(Error);
+            });
         });
 
         describe("#isRequired()", () => {
