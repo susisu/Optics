@@ -96,7 +96,16 @@ describe("command", () => {
         });
 
         describe("#toPlaceholder()", () => {
-            it("should return the placeholder wrapped by brackets [ and ]");
+            it("should return the placeholder wrapped by brackets [ and ]", () => {
+                {
+                    let arg = new command.OptionalArgument("foobar", "none", x => x);
+                    expect(arg.toPlaceholder()).to.equal("[foobar]");
+                }
+                {
+                    let arg = new command.OptionalArgument("nyancat", "none", x => x);
+                    expect(arg.toPlaceholder()).to.equal("[nyancat]");
+                }
+            });
         });
 
         describe("#getDefaultValue()", () => {
