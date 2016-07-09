@@ -89,7 +89,10 @@ describe("command", () => {
         });
 
         describe("#isRequired()", () => {
-            it("should always return false");
+            it("should always return false", () => {
+                let arg = new command.OptionalArgument("foobar", "none", x => x);
+                expect(arg.isRequired()).to.be.false;
+            });
         });
 
         describe("#toPlaceholder()", () => {
