@@ -13,13 +13,13 @@ const output  = require("../lib/output.js");
 
 describe("command", () => {
     describe("Argument", () => {
-        describe("constructor(placeholder, reader)", () => {
+        describe("constructor(name, reader)", () => {
             it("should create a new Argument instance", () => {
                 let arg = new command.Argument("foobar", x => x);
                 expect(arg).to.be.an.instanceOf(command.Argument);
             });
 
-            it("should throw an error if 'placeholder' is not a string", () => {
+            it("should throw an error if 'name' is not a string", () => {
                 expect(() => { new command.Argument(null, x => x); }).to.throw(Error);
                 expect(() => { new command.Argument(undefined, x => x); }).to.throw(Error);
                 expect(() => { new command.Argument(3.14, x => x); }).to.throw(Error);
@@ -44,7 +44,7 @@ describe("command", () => {
         });
 
         describe("#toPlaceholder()", () => {
-            it("should return the placeholder wrapped by angles < and >", () => {
+            it("should return the name wrapped by angles < and >", () => {
                 {
                     let arg = new command.Argument("foobar", x => x);
                     expect(arg.toPlaceholder()).to.equal("<foobar>");
@@ -65,13 +65,13 @@ describe("command", () => {
     });
 
     describe("OptionalArgument", () => {
-        describe("constructor(placeholder, defaultVal, reader)", () => {
+        describe("constructor(name, defaultVal, reader)", () => {
             it("should create a new OptionalArgument instance", () => {
                 let arg = new command.OptionalArgument("foobar", "none", x => x);
                 expect(arg).to.be.an.instanceOf(command.OptionalArgument);
             });
 
-            it("should throw an error if 'placeholder' is not a string", () => {
+            it("should throw an error if 'name' is not a string", () => {
                 expect(() => { new command.OptionalArgument(null, "none", x => x); }).to.throw(Error);
                 expect(() => { new command.OptionalArgument(undefined, "none", x => x); }).to.throw(Error);
                 expect(() => { new command.OptionalArgument(3.14, "none", x => x); }).to.throw(Error);
@@ -96,7 +96,7 @@ describe("command", () => {
         });
 
         describe("#toPlaceholder()", () => {
-            it("should return the placeholder wrapped by brackets [ and ]", () => {
+            it("should return the name wrapped by brackets [ and ]", () => {
                 {
                     let arg = new command.OptionalArgument("foobar", "none", x => x);
                     expect(arg.toPlaceholder()).to.equal("[foobar]");
