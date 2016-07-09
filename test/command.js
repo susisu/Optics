@@ -109,7 +109,16 @@ describe("command", () => {
         });
 
         describe("#getDefaultValue()", () => {
-            it("should return the default value specified at a constructor");
+            it("should return the default value specified at a constructor", () => {
+                {
+                    let arg = new command.OptionalArgument("foobar", "none", x => x);
+                    expect(arg.getDefaultValue()).to.equal("none");
+                }
+                {
+                    let arg = new command.OptionalArgument("foobar", 3.14, x => x);
+                    expect(arg.getDefaultValue()).to.equal(3.14);
+                }
+            });
         });
     });
 
