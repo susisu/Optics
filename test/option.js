@@ -43,7 +43,16 @@ describe("option", () => {
         });
 
         describe("#toShortPlaceholder()", () => {
-            it("should return the name");
+            it("should return the name", () => {
+                {
+                    let optarg = new option.OptionArgument("test", x => x);
+                    expect(optarg.toShortPlaceholder()).to.equal("test");
+                }
+                {
+                    let optarg = new option.OptionArgument("nyan", x => x);
+                    expect(optarg.toShortPlaceholder()).to.equal("nyan");
+                }
+            });
         });
 
         describe("#toLongPlaceholder()", () => {
