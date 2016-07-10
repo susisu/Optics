@@ -13,9 +13,26 @@ const option = require("../lib/option.js");
 describe("option", () => {
     describe("OptionArgument", () => {
         describe("constructor(name, reader)", () => {
-            it("should create a new OptionArgument instance");
-            it("should throw an error if 'name' is not a string");
-            it("should throw an error if 'reader' is not a function");
+            it("should create a new OptionArgument instance", () => {
+                let optarg = new option.OptionArgument("test", x => x);
+                expect(optarg).to.be.an.instanceOf(option.OptionArgument);
+            });
+
+            it("should throw an error if 'name' is not a string", () => {
+                expect(() => { new option.OptionArgument(null, x => x); }).to.throw(Error);
+                expect(() => { new option.OptionArgument(undefined, x => x); }).to.throw(Error);
+                expect(() => { new option.OptionArgument(3.14, x => x); }).to.throw(Error);
+                expect(() => { new option.OptionArgument(true, x => x); }).to.throw(Error);
+                expect(() => { new option.OptionArgument({}, x => x); }).to.throw(Error);
+            });
+
+            it("should throw an error if 'reader' is not a function", () => {
+                expect(() => { new option.OptionArgument("test", null); }).to.throw(Error);
+                expect(() => { new option.OptionArgument("test", undefined); }).to.throw(Error);
+                expect(() => { new option.OptionArgument("test", 3.14); }).to.throw(Error);
+                expect(() => { new option.OptionArgument("test", true); }).to.throw(Error);
+                expect(() => { new option.OptionArgument("test", {}); }).to.throw(Error);
+            });
         });
 
         describe("#isRequired()", () => {
