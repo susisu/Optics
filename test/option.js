@@ -56,7 +56,16 @@ describe("option", () => {
         });
 
         describe("#toLongPlaceholder()", () => {
-            it("should return the name preceded by =");
+            it("should return the name preceded by =", () => {
+                {
+                    let optarg = new option.OptionArgument("test", x => x);
+                    expect(optarg.toShortPlaceholder()).to.equal("=test");
+                }
+                {
+                    let optarg = new option.OptionArgument("nyan", x => x);
+                    expect(optarg.toShortPlaceholder()).to.equal("=nyan");
+                }
+            });
         });
 
         describe("#getDefaultValue()", () => {
