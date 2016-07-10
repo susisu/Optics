@@ -36,7 +36,10 @@ describe("option", () => {
         });
 
         describe("#isRequired()", () => {
-            it("should always return true");
+            it("should always return true", () => {
+                let optarg = new option.OptionArgument("test", x => x);
+                expect(optarg.isRequired()).to.be.true;
+            });
         });
 
         describe("#toShortPlaceholder()", () => {
