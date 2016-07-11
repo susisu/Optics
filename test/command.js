@@ -19,20 +19,20 @@ describe("command", () => {
                 expect(arg).to.be.an.instanceOf(command.Argument);
             });
 
-            it("should throw an error if 'name' is not a string", () => {
-                expect(() => { new command.Argument(null, x => x); }).to.throw(Error);
-                expect(() => { new command.Argument(undefined, x => x); }).to.throw(Error);
-                expect(() => { new command.Argument(3.14, x => x); }).to.throw(Error);
-                expect(() => { new command.Argument(true, x => x); }).to.throw(Error);
-                expect(() => { new command.Argument({}, x => x); }).to.throw(Error);
+            it("should throw a TypeError if 'name' is not a string", () => {
+                expect(() => { new command.Argument(null, x => x); }).to.throw(TypeError);
+                expect(() => { new command.Argument(undefined, x => x); }).to.throw(TypeError);
+                expect(() => { new command.Argument(3.14, x => x); }).to.throw(TypeError);
+                expect(() => { new command.Argument(true, x => x); }).to.throw(TypeError);
+                expect(() => { new command.Argument({}, x => x); }).to.throw(TypeError);
             });
 
-            it("should throw an error if 'reader' is not a function", () => {
-                expect(() => { new command.Argument("foobar", null); }).to.throw(Error);
-                expect(() => { new command.Argument("foobar", undefined); }).to.throw(Error);
-                expect(() => { new command.Argument("foobar", 3.14); }).to.throw(Error);
-                expect(() => { new command.Argument("foobar", true); }).to.throw(Error);
-                expect(() => { new command.Argument("foobar", {}); }).to.throw(Error);
+            it("should throw a TypeError if 'reader' is not a function", () => {
+                expect(() => { new command.Argument("foobar", null); }).to.throw(TypeError);
+                expect(() => { new command.Argument("foobar", undefined); }).to.throw(TypeError);
+                expect(() => { new command.Argument("foobar", 3.14); }).to.throw(TypeError);
+                expect(() => { new command.Argument("foobar", true); }).to.throw(TypeError);
+                expect(() => { new command.Argument("foobar", {}); }).to.throw(TypeError);
             });
         });
 
@@ -71,20 +71,20 @@ describe("command", () => {
                 expect(arg).to.be.an.instanceOf(command.OptionalArgument);
             });
 
-            it("should throw an error if 'name' is not a string", () => {
-                expect(() => { new command.OptionalArgument(null, "none", x => x); }).to.throw(Error);
-                expect(() => { new command.OptionalArgument(undefined, "none", x => x); }).to.throw(Error);
-                expect(() => { new command.OptionalArgument(3.14, "none", x => x); }).to.throw(Error);
-                expect(() => { new command.OptionalArgument(true, "none", x => x); }).to.throw(Error);
-                expect(() => { new command.OptionalArgument({}, "none", x => x); }).to.throw(Error);
+            it("should throw a TypeError if 'name' is not a string", () => {
+                expect(() => { new command.OptionalArgument(null, "none", x => x); }).to.throw(TypeError);
+                expect(() => { new command.OptionalArgument(undefined, "none", x => x); }).to.throw(TypeError);
+                expect(() => { new command.OptionalArgument(3.14, "none", x => x); }).to.throw(TypeError);
+                expect(() => { new command.OptionalArgument(true, "none", x => x); }).to.throw(TypeError);
+                expect(() => { new command.OptionalArgument({}, "none", x => x); }).to.throw(TypeError);
             });
 
-            it("should throw an error if 'reader' is not a function", () => {
-                expect(() => { new command.Argument("foobar", "none", null); }).to.throw(Error);
-                expect(() => { new command.Argument("foobar", "none", undefined); }).to.throw(Error);
-                expect(() => { new command.Argument("foobar", "none", 3.14); }).to.throw(Error);
-                expect(() => { new command.Argument("foobar", "none", true); }).to.throw(Error);
-                expect(() => { new command.Argument("foobar", "none", {}); }).to.throw(Error);
+            it("should throw a TypeError if 'reader' is not a function", () => {
+                expect(() => { new command.Argument("foobar", "none", null); }).to.throw(TypeError);
+                expect(() => { new command.Argument("foobar", "none", undefined); }).to.throw(TypeError);
+                expect(() => { new command.Argument("foobar", "none", 3.14); }).to.throw(TypeError);
+                expect(() => { new command.Argument("foobar", "none", true); }).to.throw(TypeError);
+                expect(() => { new command.Argument("foobar", "none", {}); }).to.throw(TypeError);
             });
         });
 
