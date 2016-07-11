@@ -18,20 +18,20 @@ describe("option", () => {
                 expect(optarg).to.be.an.instanceOf(option.OptionArgument);
             });
 
-            it("should throw an error if 'name' is not a string", () => {
-                expect(() => { new option.OptionArgument(null, x => x); }).to.throw(Error);
-                expect(() => { new option.OptionArgument(undefined, x => x); }).to.throw(Error);
-                expect(() => { new option.OptionArgument(3.14, x => x); }).to.throw(Error);
-                expect(() => { new option.OptionArgument(true, x => x); }).to.throw(Error);
-                expect(() => { new option.OptionArgument({}, x => x); }).to.throw(Error);
+            it("should throw a TypeError if 'name' is not a string", () => {
+                expect(() => { new option.OptionArgument(null, x => x); }).to.throw(TypeError);
+                expect(() => { new option.OptionArgument(undefined, x => x); }).to.throw(TypeError);
+                expect(() => { new option.OptionArgument(3.14, x => x); }).to.throw(TypeError);
+                expect(() => { new option.OptionArgument(true, x => x); }).to.throw(TypeError);
+                expect(() => { new option.OptionArgument({}, x => x); }).to.throw(TypeError);
             });
 
-            it("should throw an error if 'reader' is not a function", () => {
-                expect(() => { new option.OptionArgument("test", null); }).to.throw(Error);
-                expect(() => { new option.OptionArgument("test", undefined); }).to.throw(Error);
-                expect(() => { new option.OptionArgument("test", 3.14); }).to.throw(Error);
-                expect(() => { new option.OptionArgument("test", true); }).to.throw(Error);
-                expect(() => { new option.OptionArgument("test", {}); }).to.throw(Error);
+            it("should throw a TypeError if 'reader' is not a function", () => {
+                expect(() => { new option.OptionArgument("test", null); }).to.throw(TypeError);
+                expect(() => { new option.OptionArgument("test", undefined); }).to.throw(TypeError);
+                expect(() => { new option.OptionArgument("test", 3.14); }).to.throw(TypeError);
+                expect(() => { new option.OptionArgument("test", true); }).to.throw(TypeError);
+                expect(() => { new option.OptionArgument("test", {}); }).to.throw(TypeError);
             });
         });
 
