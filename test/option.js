@@ -59,11 +59,11 @@ describe("option", () => {
             it("should return the name preceded by =", () => {
                 {
                     let optarg = new option.OptionArgument("test", x => x);
-                    expect(optarg.toShortPlaceholder()).to.equal("=test");
+                    expect(optarg.toLongPlaceholder()).to.equal("=test");
                 }
                 {
                     let optarg = new option.OptionArgument("nyan", x => x);
-                    expect(optarg.toShortPlaceholder()).to.equal("=nyan");
+                    expect(optarg.toLongPlaceholder()).to.equal("=nyan");
                 }
             });
         });
