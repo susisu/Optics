@@ -69,7 +69,10 @@ describe("option", () => {
         });
 
         describe("#getDefaultValue()", () => {
-            it("should throw an error");
+            it("should throw an error", () => {
+                let optarg = new option.OptionArgument("test", x => x);
+                expect(() => { optarg.getDefaultValue(); }).to.throw(Error);
+            });
         });
     });
 
