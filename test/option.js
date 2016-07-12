@@ -108,7 +108,16 @@ describe("option", () => {
         });
 
         describe("#toShortPlaceholder()", () => {
-            it("should return the name wrapped by brackets [ and ]");
+            it("should return the name wrapped by brackets [ and ]", () => {
+                {
+                    let optarg = new option.OptionalOptionArgument("test", "none", x => x);
+                    expect(optarg.toShortPlaceholder()).to.equal("[test]");
+                }
+                {
+                    let optarg = new option.OptionalOptionArgument("nyan", "none", x => x);
+                    expect(optarg.toShortPlaceholder()).to.equal("[nyan]");
+                }
+            });
         });
 
         describe("#toLongPlaceholder()", () => {
