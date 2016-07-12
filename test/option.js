@@ -78,9 +78,26 @@ describe("option", () => {
 
     describe("OptionalOptionArgument", () => {
         describe("constructor(name, defaultVal, reader", () => {
-            it("should create a new OptionalOptionArgument instance");
-            it("should throw an error if 'name' is not a string");
-            it("should throw an error if 'reader' is not a function");
+            it("should create a new OptionalOptionArgument instance", () => {
+                let optarg = new option.OptionalOptionArgument("test", "none", x => x);
+                expect(optarg).to.be.an.instanceOf(option.OptionalOptionArgument);
+            });
+
+            it("should throw an error if 'name' is not a string", () => {
+                expect(() => { new option.OptionalOptionArgument(null, "none", x => x); }).to.throw(TypeError);
+                expect(() => { new option.OptionalOptionArgument(undefined, "none", x => x); }).to.throw(TypeError);
+                expect(() => { new option.OptionalOptionArgument(3.14, "none", x => x); }).to.throw(TypeError);
+                expect(() => { new option.OptionalOptionArgument(true, "none", x => x); }).to.throw(TypeError);
+                expect(() => { new option.OptionalOptionArgument({}, "none", x => x); }).to.throw(TypeError);
+            });
+
+            it("should throw an error if 'reader' is not a function", () => {
+                expect(() => { new option.OptionalOptionArgument("test", "none", null); }).to.throw(TypeError);
+                expect(() => { new option.OptionalOptionArgument("test", "none", undefined); }).to.throw(TypeError);
+                expect(() => { new option.OptionalOptionArgument("test", "none", 3.14); }).to.throw(TypeError);
+                expect(() => { new option.OptionalOptionArgument("test", "none", true); }).to.throw(TypeError);
+                expect(() => { new option.OptionalOptionArgument("test", "none", {}); }).to.throw(TypeError);
+            });
         });
 
         describe("#isRequired()", () => {
