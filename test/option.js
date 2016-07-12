@@ -121,7 +121,16 @@ describe("option", () => {
         });
 
         describe("#toLongPlaceholder()", () => {
-            it("should return the name preceded by = and wrapped by brackets [ and ]");
+            it("should return the name preceded by = and wrapped by brackets [ and ]", () => {
+                {
+                    let optarg = new option.OptionalOptionArgument("test", "none", x => x);
+                    expect(optarg.toLongPlaceholder()).to.equal("[=test]");
+                }
+                {
+                    let optarg = new option.OptionalOptionArgument("nyan", "none", x => x);
+                    expect(optarg.toLongPlaceholder()).to.equal("[=nyan]");
+                }
+            });
         });
 
         describe("#getDefaultValue()", () => {
