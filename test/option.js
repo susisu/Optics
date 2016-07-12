@@ -101,7 +101,7 @@ describe("option", () => {
     })
 
     describe("Option", () => {
-        describe("constructor(shortName, longName, arg, desc", () => {
+        describe("constructor(shortName, longName, arg, desc)", () => {
             it("should create a new Option instance");
             it("should throw an error if 'shortName' is not a string nor undefined");
             it("should throw an error if 'shortName' is a string and its length is not 1");
