@@ -101,7 +101,10 @@ describe("option", () => {
         });
 
         describe("#isRequired()", () => {
-            it("should always return false");
+            it("should always return false", () => {
+                let optarg = new option.OptionalOptionArgument("test", "none", x => x);
+                expect(optarg.isRequired()).to.be.false;
+            });
         });
 
         describe("#toShortPlaceholder()", () => {
