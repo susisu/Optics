@@ -134,7 +134,16 @@ describe("option", () => {
         });
 
         describe("#getDefaultValue()", () => {
-            it("should return the default value specified at a constructor");
+            it("should return the default value specified at a constructor", () => {
+                {
+                    let optarg = new option.OptionalOptionArgument("test", "none", x => x);
+                    expect(optarg.getDefaultValue()).to.equal("none");
+                }
+                {
+                    let optarg = new option.OptionalOptionArgument("nyan", 3.14, x => x);
+                    expect(optarg.getDefaultValue()).to.equal(3.14);
+                }
+            });
         });
     })
 
