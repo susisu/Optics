@@ -149,14 +149,260 @@ describe("option", () => {
 
     describe("Option", () => {
         describe("constructor(shortName, longName, arg, desc)", () => {
-            it("should create a new Option instance");
-            it("should throw an error if 'shortName' is not a string nor undefined");
-            it("should throw an error if 'shortName' is a string and its length is not 1");
-            it("should throw an error if 'longName' is not a string nor undefined");
-            it("should throw an error if 'longName' is a string and its length is 0");
-            it("should throw an error if both 'shortName' and 'longName' are undefined");
-            it("should throw an error if 'arg' is not an instance of OptionalArgument nor null");
-            it("should throw an error if 'desc' is not a string");
+            it("should create a new Option instance", () => {
+                let opt = new option.Option(
+                    "t", "test",
+                    new option.OptionArgument("nyan", x => x),
+                    "test option"
+                );
+                expect(opt).to.be.an.instanceOf(option.Option);
+            });
+
+            it("should throw a TypeError if 'shortName' is not a string nor undefined", () => {
+                expect(() => {
+                    new option.Option(
+                        "t", "test",
+                        new option.OptionArgument("nyan", x => x),
+                        "test option"
+                    );
+                }).not.to.throw(TypeError);
+
+                expect(() => {
+                    new option.Option(
+                        undefined, "test",
+                        new option.OptionArgument("nyan", x => x),
+                        "test option"
+                    );
+                }).not.to.throw(TypeError);
+
+                expect(() => {
+                    new option.Option(
+                        null, "test",
+                        new option.OptionArgument("nyan", x => x),
+                        "test option"
+                    );
+                }).to.throw(TypeError);
+
+                expect(() => {
+                    new option.Option(
+                        3.14, "test",
+                        new option.OptionArgument("nyan", x => x),
+                        "test option"
+                    );
+                }).to.throw(TypeError);
+
+                expect(() => {
+                    new option.Option(
+                        true, "test",
+                        new option.OptionArgument("nyan", x => x),
+                        "test option"
+                    );
+                }).to.throw(TypeError);
+
+                expect(() => {
+                    new option.Option(
+                        {}, "test",
+                        new option.OptionArgument("nyan", x => x),
+                        "test option"
+                    );
+                }).to.throw(TypeError);
+            });
+
+            it("should throw an error if 'shortName' is a string and its length is not 1", () => {
+                expect(() => {
+                    new option.Option(
+                        "", "test",
+                        new option.OptionArgument("nyan", x => x),
+                        "test option"
+                    );
+                }).to.throw(Error);
+
+                expect(() => {
+                    new option.Option(
+                        "toolong", "test",
+                        new option.OptionArgument("nyan", x => x),
+                        "test option"
+                    );
+                }).to.throw(Error);
+            });
+
+            it("should throw an error if 'longName' is not a string nor undefined", () => {
+                                expect(() => {
+                    new option.Option(
+                        "t", "test",
+                        new option.OptionArgument("nyan", x => x),
+                        "test option"
+                    );
+                }).not.to.throw(TypeError);
+
+                expect(() => {
+                    new option.Option(
+                        "t", undefined,
+                        new option.OptionArgument("nyan", x => x),
+                        "test option"
+                    );
+                }).not.to.throw(TypeError);
+
+                expect(() => {
+                    new option.Option(
+                        "t", null,
+                        new option.OptionArgument("nyan", x => x),
+                        "test option"
+                    );
+                }).to.throw(TypeError);
+
+                expect(() => {
+                    new option.Option(
+                        "t", 3.14,
+                        new option.OptionArgument("nyan", x => x),
+                        "test option"
+                    );
+                }).to.throw(TypeError);
+
+                expect(() => {
+                    new option.Option(
+                        "t", true,
+                        new option.OptionArgument("nyan", x => x),
+                        "test option"
+                    );
+                }).to.throw(TypeError);
+
+                expect(() => {
+                    new option.Option(
+                        "t", {},
+                        new option.OptionArgument("nyan", x => x),
+                        "test option"
+                    );
+                }).to.throw(TypeError);
+            });
+
+            it("should throw an error if 'longName' is a string and its length is 0", () => {
+                expect(() => {
+                    new option.Option(
+                        "t", "",
+                        new option.OptionArgument("nyan", x => x),
+                        "test option"
+                    );
+                }).to.throw(Error);
+            });
+
+            it("should throw an error if both 'shortName' and 'longName' are undefined", () => {
+                expect(() => {
+                    new option.Option(
+                        undefined, undefined,
+                        new option.OptionArgument("nyan", x => x),
+                        "test option"
+                    );
+                }).to.throw(Error);
+            });
+
+            it("should throw a TypeError if 'arg' is not an instance of OptionalArgument nor null", () => {
+                expect(() => {
+                    new option.Option(
+                        " t", "test",
+                        new option.OptionArgument("nyan", x => x),
+                        "test option"
+                    );
+                }).not.to.throw(TypeError);
+
+                expect(() => {
+                    new option.Option(
+                        " t", "test",
+                        new option.OptionalOptionArgument("nyan", "cat", x => x),
+                        "test option"
+                    );
+                }).not.to.throw(TypeError);
+
+                expect(() => {
+                    new option.Option(
+                        " t", "test",
+                        null,
+                        "test option"
+                    );
+                }).not.to.throw(TypeError);
+
+                expect(() => {
+                    new option.Option(
+                        " t", "test",
+                        undefined,
+                        "test option"
+                    );
+                }).to.throw(TypeError);
+
+                expect(() => {
+                    new option.Option(
+                        " t", "test",
+                        3.14,
+                        "test option"
+                    );
+                }).to.throw(TypeError);
+
+                expect(() => {
+                    new option.Option(
+                        " t", "test",
+                        true,
+                        "test option"
+                    );
+                }).to.throw(TypeError);
+
+                expect(() => {
+                    new option.Option(
+                        " t", "test",
+                        {},
+                        "test option"
+                    );
+                }).to.throw(TypeError);
+            });
+
+            it("should throw an error if 'desc' is not a string", () => {
+                expect(() => {
+                    new option.Option(
+                        " t", "test",
+                        new option.OptionArgument("nyan", x => x),
+                        "test option"
+                    );
+                }).not.to.throw(TypeError);
+
+                expect(() => {
+                    new option.Option(
+                        " t", "test",
+                        new option.OptionArgument("nyan", x => x),
+                        null
+                    );
+                }).to.throw(TypeError);
+
+                expect(() => {
+                    new option.Option(
+                        " t", "test",
+                        new option.OptionArgument("nyan", x => x),
+                        undefined
+                    );
+                }).to.throw(TypeError);
+
+                expect(() => {
+                    new option.Option(
+                        " t", "test",
+                        new option.OptionArgument("nyan", x => x),
+                        3.14
+                    );
+                }).to.throw(TypeError);
+
+                expect(() => {
+                    new option.Option(
+                        " t", "test",
+                        new option.OptionArgument("nyan", x => x),
+                        true
+                    );
+                }).to.throw(TypeError);
+
+                expect(() => {
+                    new option.Option(
+                        " t", "test",
+                        new option.OptionArgument("nyan", x => x),
+                        {}
+                    );
+                }).to.throw(TypeError);
+            });
         });
     })
 });
