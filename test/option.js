@@ -299,7 +299,7 @@ describe("option", () => {
             it("should throw a TypeError if 'arg' is not an instance of OptionalArgument nor null", () => {
                 expect(() => {
                     new option.Option(
-                        " t", "test",
+                        "t", "test",
                         new option.OptionArgument("nyan", x => x),
                         "test option"
                     );
@@ -307,7 +307,7 @@ describe("option", () => {
 
                 expect(() => {
                     new option.Option(
-                        " t", "test",
+                        "t", "test",
                         new option.OptionalOptionArgument("nyan", "cat", x => x),
                         "test option"
                     );
@@ -315,7 +315,7 @@ describe("option", () => {
 
                 expect(() => {
                     new option.Option(
-                        " t", "test",
+                        "t", "test",
                         null,
                         "test option"
                     );
@@ -323,7 +323,7 @@ describe("option", () => {
 
                 expect(() => {
                     new option.Option(
-                        " t", "test",
+                        "t", "test",
                         undefined,
                         "test option"
                     );
@@ -331,7 +331,7 @@ describe("option", () => {
 
                 expect(() => {
                     new option.Option(
-                        " t", "test",
+                        "t", "test",
                         3.14,
                         "test option"
                     );
@@ -339,7 +339,7 @@ describe("option", () => {
 
                 expect(() => {
                     new option.Option(
-                        " t", "test",
+                        "t", "test",
                         true,
                         "test option"
                     );
@@ -347,7 +347,7 @@ describe("option", () => {
 
                 expect(() => {
                     new option.Option(
-                        " t", "test",
+                        "t", "test",
                         {},
                         "test option"
                     );
@@ -357,7 +357,7 @@ describe("option", () => {
             it("should throw an error if 'desc' is not a string", () => {
                 expect(() => {
                     new option.Option(
-                        " t", "test",
+                        "t", "test",
                         new option.OptionArgument("nyan", x => x),
                         "test option"
                     );
@@ -365,7 +365,7 @@ describe("option", () => {
 
                 expect(() => {
                     new option.Option(
-                        " t", "test",
+                        "t", "test",
                         new option.OptionArgument("nyan", x => x),
                         null
                     );
@@ -373,7 +373,7 @@ describe("option", () => {
 
                 expect(() => {
                     new option.Option(
-                        " t", "test",
+                        "t", "test",
                         new option.OptionArgument("nyan", x => x),
                         undefined
                     );
@@ -381,7 +381,7 @@ describe("option", () => {
 
                 expect(() => {
                     new option.Option(
-                        " t", "test",
+                        "t", "test",
                         new option.OptionArgument("nyan", x => x),
                         3.14
                     );
@@ -389,7 +389,7 @@ describe("option", () => {
 
                 expect(() => {
                     new option.Option(
-                        " t", "test",
+                        "t", "test",
                         new option.OptionArgument("nyan", x => x),
                         true
                     );
@@ -397,7 +397,7 @@ describe("option", () => {
 
                 expect(() => {
                     new option.Option(
-                        " t", "test",
+                        "t", "test",
                         new option.OptionArgument("nyan", x => x),
                         {}
                     );
