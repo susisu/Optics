@@ -19,19 +19,32 @@ describe("option", () => {
             });
 
             it("should throw a TypeError if 'name' is not a string", () => {
-                expect(() => { new option.OptionArgument(null, x => x); }).to.throw(TypeError);
-                expect(() => { new option.OptionArgument(undefined, x => x); }).to.throw(TypeError);
-                expect(() => { new option.OptionArgument(3.14, x => x); }).to.throw(TypeError);
-                expect(() => { new option.OptionArgument(true, x => x); }).to.throw(TypeError);
-                expect(() => { new option.OptionArgument({}, x => x); }).to.throw(TypeError);
+                function construct(name) {
+                    return () => {
+                        new option.OptionArgument(name, x => x);
+                    };
+                }
+
+                expect(construct(null)).to.throw(TypeError);
+                expect(construct(undefined)).to.throw(TypeError);
+                expect(construct(3.14)).to.throw(TypeError);
+                expect(construct(true)).to.throw(TypeError);
+                expect(construct({})).to.throw(TypeError);
             });
 
             it("should throw a TypeError if 'reader' is not a function", () => {
-                expect(() => { new option.OptionArgument("test", null); }).to.throw(TypeError);
-                expect(() => { new option.OptionArgument("test", undefined); }).to.throw(TypeError);
-                expect(() => { new option.OptionArgument("test", 3.14); }).to.throw(TypeError);
-                expect(() => { new option.OptionArgument("test", true); }).to.throw(TypeError);
-                expect(() => { new option.OptionArgument("test", {}); }).to.throw(TypeError);
+                function construct(reader) {
+                    return () => {
+                        new option.OptionArgument("test", reader);
+                    };
+                }
+
+                expect(construct(null)).to.throw(TypeError);
+                expect(construct(undefined)).to.throw(TypeError);
+                expect(construct("foobar")).to.throw(TypeError);
+                expect(construct(3.14)).to.throw(TypeError);
+                expect(construct(true)).to.throw(TypeError);
+                expect(construct({})).to.throw(TypeError);
             });
         });
 
@@ -84,19 +97,32 @@ describe("option", () => {
             });
 
             it("should throw an error if 'name' is not a string", () => {
-                expect(() => { new option.OptionalOptionArgument(null, "none", x => x); }).to.throw(TypeError);
-                expect(() => { new option.OptionalOptionArgument(undefined, "none", x => x); }).to.throw(TypeError);
-                expect(() => { new option.OptionalOptionArgument(3.14, "none", x => x); }).to.throw(TypeError);
-                expect(() => { new option.OptionalOptionArgument(true, "none", x => x); }).to.throw(TypeError);
-                expect(() => { new option.OptionalOptionArgument({}, "none", x => x); }).to.throw(TypeError);
+                function construct(name) {
+                    return () => {
+                        new option.OptionalOptionArgument(name, "none", x => x);
+                    };
+                }
+
+                expect(construct(null)).to.throw(TypeError);
+                expect(construct(undefined)).to.throw(TypeError);
+                expect(construct(3.14)).to.throw(TypeError);
+                expect(construct(true)).to.throw(TypeError);
+                expect(construct({})).to.throw(TypeError);
             });
 
             it("should throw an error if 'reader' is not a function", () => {
-                expect(() => { new option.OptionalOptionArgument("test", "none", null); }).to.throw(TypeError);
-                expect(() => { new option.OptionalOptionArgument("test", "none", undefined); }).to.throw(TypeError);
-                expect(() => { new option.OptionalOptionArgument("test", "none", 3.14); }).to.throw(TypeError);
-                expect(() => { new option.OptionalOptionArgument("test", "none", true); }).to.throw(TypeError);
-                expect(() => { new option.OptionalOptionArgument("test", "none", {}); }).to.throw(TypeError);
+                function construct(reader) {
+                    return () => {
+                        new option.OptionalOptionArgument("test", "none", reader);
+                    };
+                }
+
+                expect(construct(null)).to.throw(TypeError);
+                expect(construct(undefined)).to.throw(TypeError);
+                expect(construct("foobar")).to.throw(TypeError);
+                expect(construct(3.14)).to.throw(TypeError);
+                expect(construct(true)).to.throw(TypeError);
+                expect(construct({})).to.throw(TypeError);
             });
         });
 
@@ -159,121 +185,58 @@ describe("option", () => {
             });
 
             it("should throw a TypeError if 'shortName' is not a string nor undefined", () => {
-                expect(() => {
-                    new option.Option(
-                        "t", "test",
-                        new option.OptionArgument("nyan", x => x),
-                        "test option"
-                    );
-                }).not.to.throw(TypeError);
+                function construct(shortName) {
+                    return () => {
+                        new option.Option(
+                            shortName, "test",
+                            new option.OptionArgument("nyan", x => x),
+                            "test option"
+                        );
+                    };
+                }
 
-                expect(() => {
-                    new option.Option(
-                        undefined, "test",
-                        new option.OptionArgument("nyan", x => x),
-                        "test option"
-                    );
-                }).not.to.throw(TypeError);
+                expect(construct("t")).not.to.throw(TypeError);
+                expect(construct(undefined)).not.to.throw(TypeError);
 
-                expect(() => {
-                    new option.Option(
-                        null, "test",
-                        new option.OptionArgument("nyan", x => x),
-                        "test option"
-                    );
-                }).to.throw(TypeError);
-
-                expect(() => {
-                    new option.Option(
-                        3.14, "test",
-                        new option.OptionArgument("nyan", x => x),
-                        "test option"
-                    );
-                }).to.throw(TypeError);
-
-                expect(() => {
-                    new option.Option(
-                        true, "test",
-                        new option.OptionArgument("nyan", x => x),
-                        "test option"
-                    );
-                }).to.throw(TypeError);
-
-                expect(() => {
-                    new option.Option(
-                        {}, "test",
-                        new option.OptionArgument("nyan", x => x),
-                        "test option"
-                    );
-                }).to.throw(TypeError);
+                expect(construct(null)).to.throw(TypeError);
+                expect(construct(3.14)).to.throw(TypeError);
+                expect(construct(true)).to.throw(TypeError);
+                expect(construct({})).to.throw(TypeError);
             });
 
             it("should throw an error if 'shortName' is a string and its length is not 1", () => {
-                expect(() => {
-                    new option.Option(
-                        "", "test",
-                        new option.OptionArgument("nyan", x => x),
-                        "test option"
-                    );
-                }).to.throw(Error);
+                function construct(shortName) {
+                    return () => {
+                        new option.Option(
+                            shortName, "test",
+                            new option.OptionArgument("nyan", x => x),
+                            "test option"
+                        );
+                    };
+                }
 
-                expect(() => {
-                    new option.Option(
-                        "toolong", "test",
-                        new option.OptionArgument("nyan", x => x),
-                        "test option"
-                    );
-                }).to.throw(Error);
+                expect(construct("")).to.throw(Error);
+                expect(construct("toolong")).to.throw(Error);
             });
 
             it("should throw an error if 'longName' is not a string nor undefined", () => {
-                                expect(() => {
-                    new option.Option(
-                        "t", "test",
-                        new option.OptionArgument("nyan", x => x),
-                        "test option"
-                    );
-                }).not.to.throw(TypeError);
+                function construct(longName) {
+                    return () => {
+                        new option.Option(
+                            "t", longName,
+                            new option.OptionArgument("nyan", x => x),
+                            "test option"
+                        );
+                    };
+                }
 
-                expect(() => {
-                    new option.Option(
-                        "t", undefined,
-                        new option.OptionArgument("nyan", x => x),
-                        "test option"
-                    );
-                }).not.to.throw(TypeError);
+                expect(construct("test")).not.to.throw(TypeError);
+                expect(construct(undefined)).not.to.throw(TypeError);
 
-                expect(() => {
-                    new option.Option(
-                        "t", null,
-                        new option.OptionArgument("nyan", x => x),
-                        "test option"
-                    );
-                }).to.throw(TypeError);
-
-                expect(() => {
-                    new option.Option(
-                        "t", 3.14,
-                        new option.OptionArgument("nyan", x => x),
-                        "test option"
-                    );
-                }).to.throw(TypeError);
-
-                expect(() => {
-                    new option.Option(
-                        "t", true,
-                        new option.OptionArgument("nyan", x => x),
-                        "test option"
-                    );
-                }).to.throw(TypeError);
-
-                expect(() => {
-                    new option.Option(
-                        "t", {},
-                        new option.OptionArgument("nyan", x => x),
-                        "test option"
-                    );
-                }).to.throw(TypeError);
+                expect(construct(null)).to.throw(TypeError);
+                expect(construct(3.14)).to.throw(TypeError);
+                expect(construct(true)).to.throw(TypeError);
+                expect(construct({})).to.throw(TypeError);
             });
 
             it("should throw an error if 'longName' is a string and its length is 0", () => {
@@ -297,111 +260,45 @@ describe("option", () => {
             });
 
             it("should throw a TypeError if 'arg' is not an instance of OptionalArgument nor null", () => {
-                expect(() => {
-                    new option.Option(
-                        "t", "test",
-                        new option.OptionArgument("nyan", x => x),
-                        "test option"
-                    );
-                }).not.to.throw(TypeError);
+                function construct(arg) {
+                    return () => {
+                        new option.Option(
+                            "t", "test",
+                            arg,
+                            "test option"
+                        );
+                    };
+                }
 
-                expect(() => {
-                    new option.Option(
-                        "t", "test",
-                        new option.OptionalOptionArgument("nyan", "cat", x => x),
-                        "test option"
-                    );
-                }).not.to.throw(TypeError);
+                expect(construct(new option.OptionArgument("nyan", x => x))).not.to.throw(TypeError);
+                expect(construct(new option.OptionalOptionArgument("nyan", "cat", x => x))).not.to.throw(TypeError);
+                expect(construct(null)).not.to.throw(TypeError);
 
-                expect(() => {
-                    new option.Option(
-                        "t", "test",
-                        null,
-                        "test option"
-                    );
-                }).not.to.throw(TypeError);
-
-                expect(() => {
-                    new option.Option(
-                        "t", "test",
-                        undefined,
-                        "test option"
-                    );
-                }).to.throw(TypeError);
-
-                expect(() => {
-                    new option.Option(
-                        "t", "test",
-                        3.14,
-                        "test option"
-                    );
-                }).to.throw(TypeError);
-
-                expect(() => {
-                    new option.Option(
-                        "t", "test",
-                        true,
-                        "test option"
-                    );
-                }).to.throw(TypeError);
-
-                expect(() => {
-                    new option.Option(
-                        "t", "test",
-                        {},
-                        "test option"
-                    );
-                }).to.throw(TypeError);
+                expect(construct(undefined)).to.throw(TypeError);
+                expect(construct("foobar")).to.throw(TypeError);
+                expect(construct(3.14)).to.throw(TypeError);
+                expect(construct(true)).to.throw(TypeError);
+                expect(construct({})).to.throw(TypeError);
             });
 
             it("should throw an error if 'desc' is not a string", () => {
-                expect(() => {
-                    new option.Option(
-                        "t", "test",
-                        new option.OptionArgument("nyan", x => x),
-                        "test option"
-                    );
-                }).not.to.throw(TypeError);
+                function construct(desc) {
+                    return () => {
+                        new option.Option(
+                            "t", "test",
+                            new option.OptionArgument("nyan", x => x),
+                            desc
+                        );
+                    };
+                }
 
-                expect(() => {
-                    new option.Option(
-                        "t", "test",
-                        new option.OptionArgument("nyan", x => x),
-                        null
-                    );
-                }).to.throw(TypeError);
+                expect(construct("test option")).not.to.throw(TypeError);
 
-                expect(() => {
-                    new option.Option(
-                        "t", "test",
-                        new option.OptionArgument("nyan", x => x),
-                        undefined
-                    );
-                }).to.throw(TypeError);
-
-                expect(() => {
-                    new option.Option(
-                        "t", "test",
-                        new option.OptionArgument("nyan", x => x),
-                        3.14
-                    );
-                }).to.throw(TypeError);
-
-                expect(() => {
-                    new option.Option(
-                        "t", "test",
-                        new option.OptionArgument("nyan", x => x),
-                        true
-                    );
-                }).to.throw(TypeError);
-
-                expect(() => {
-                    new option.Option(
-                        "t", "test",
-                        new option.OptionArgument("nyan", x => x),
-                        {}
-                    );
-                }).to.throw(TypeError);
+                expect(construct(null)).to.throw(TypeError);
+                expect(construct(undefined)).to.throw(TypeError);
+                expect(construct(3.14)).to.throw(TypeError);
+                expect(construct(true)).to.throw(TypeError);
+                expect(construct({})).to.throw(TypeError);
             });
         });
     })
