@@ -9,6 +9,7 @@ const chai   = require("chai");
 const expect = chai.expect;
 
 const command = require("../lib/command.js");
+const option  = require("../lib/option.js");
 const output  = require("../lib/output.js");
 
 describe("command", () => {
@@ -144,11 +145,167 @@ describe("command", () => {
 
     describe("Command", () => {
         describe("constructor(desc, args, opts, action)", () => {
-            it("should create a new Command instance");
-            it("should throw an error if 'args' is not an array of Argument");
-            it("should throw an error if 'opts' is not an array of Option");
-            it("should throw an error if 'action' is not a function");
-            it("should throw an error if a required argument occurs after an optional argument");
+            it("should create a new Command instance", () => {
+                let cmd = new command.Command(
+                    "test command",
+                    [],
+                    [],
+                    (args, opts) => {}
+                );
+                expect(cmd).to.be.an.instanceOf(command.Command);
+            });
+
+            it("should throw a TypeError if 'desc' is not a string", () => {
+                function construct(desc) {
+                    return () => {
+                        new command.Command(
+                            desc,
+                            [],
+                            [],
+                            (args, opts) => {}
+                        );
+                    };
+                }
+                expect(construct("test command")).not.to.throw(TypeError);
+
+                expect(construct(null)).to.throw(TypeError);
+                expect(construct(undefined)).to.throw(TypeError);
+                expect(construct(3.14)).to.throw(TypeError);
+                expect(construct(true)).to.throw(TypeError);
+                expect(construct({})).to.throw(TypeError);
+            });
+
+            it("should throw a TypeError if 'args' is not an array of Argument", () => {
+                function construct(args) {
+                    return () => {
+                        new command.Command(
+                            "test command",
+                            args,
+                            [],
+                            (args, opts) => {}
+                        );
+                    };
+                }
+
+                expect(construct([])).not.to.throw(TypeError);
+                expect(construct([
+                    new command.Argument("foobar", x => x)
+                ])).not.to.throw(TypeError);
+                expect(construct([
+                    new command.OptionalArgument("nyancat", "nyan", x => x)
+                ])).not.to.throw(TypeError);
+                expect(construct([
+                    new command.Argument("foobar", x => x),
+                    new command.OptionalArgument("nyancat", "nyan", x => x)
+                ])).not.to.throw(TypeError);
+
+                expect(construct(null)).to.throw(TypeError);
+                expect(construct(undefined)).to.throw(TypeError);
+                expect(construct("args")).to.throw(TypeError);
+                expect(construct(3.14)).to.throw(TypeError);
+                expect(construct(true)).to.throw(TypeError);
+                expect(construct({})).to.throw(TypeError);
+                expect(construct(() => {})).to.throw(TypeError);
+                expect(construct([null])).to.throw(TypeError);
+                expect(construct([undefined])).to.throw(TypeError);
+                expect(construct(["args"])).to.throw(TypeError);
+                expect(construct([3.14])).to.throw(TypeError);
+                expect(construct([true])).to.throw(TypeError);
+                expect(construct([{}])).to.throw(TypeError);
+                expect(construct([() => {}])).to.throw(TypeError);
+            });
+
+            it("should throw a TypeError if 'opts' is not an array of Option", () => {
+                function construct(opts) {
+                    return () => {
+                        new command.Command(
+                            "test command",
+                            [],
+                            opts,
+                            (args, opts) => {}
+                        );
+                    };
+                }
+
+                expect(construct([])).not.to.throw(TypeError);
+                expect(construct([
+                    new option.Option(
+                        "t", "test",
+                        new option.OptionArgument("nyan", x => x),
+                        "test option"
+                    )
+                ])).not.to.throw(TypeError);
+                expect(construct([
+                    new option.Option(
+                        "t", "test",
+                        new option.OptionArgument("nyan", x => x),
+                        "test option"
+                    ),
+                    new option.Option(
+                        "c", "cat",
+                        new option.OptionalOptionArgument("cat", "neko", x => x),
+                        "specify a cat"
+                    )
+                ])).not.to.throw(TypeError);
+
+                expect(construct(null)).to.throw(TypeError);
+                expect(construct(undefined)).to.throw(TypeError);
+                expect(construct("args")).to.throw(TypeError);
+                expect(construct(3.14)).to.throw(TypeError);
+                expect(construct(true)).to.throw(TypeError);
+                expect(construct({})).to.throw(TypeError);
+                expect(construct(() => {})).to.throw(TypeError);
+                expect(construct([null])).to.throw(TypeError);
+                expect(construct([undefined])).to.throw(TypeError);
+                expect(construct(["args"])).to.throw(TypeError);
+                expect(construct([3.14])).to.throw(TypeError);
+                expect(construct([true])).to.throw(TypeError);
+                expect(construct([{}])).to.throw(TypeError);
+                expect(construct([() => {}])).to.throw(TypeError);
+            });
+
+            it("should throw a TypeError if 'action' is not a function", () => {
+                function construct(action) {
+                    return () => {
+                        new command.Command(
+                            "test command",
+                            [],
+                            [],
+                            action
+                        );
+                    };
+                }
+
+                expect(construct(null)).to.throw(TypeError);
+                expect(construct(undefined)).to.throw(TypeError);
+                expect(construct("foobar")).to.throw(TypeError);
+                expect(construct(3.14)).to.throw(TypeError);
+                expect(construct(true)).to.throw(TypeError);
+                expect(construct({})).to.throw(TypeError);
+            });
+
+            it("should throw an error if a required argument occurs after an optional argument", () => {
+                function construct(args) {
+                    return () => {
+                        new command.Command(
+                            "test command",
+                            args,
+                            [],
+                            (args, opts) => {}
+                        );
+                    };
+                }
+
+                expect(construct([
+                    new command.Argument("foobar", x => x),
+                    new command.OptionalArgument("nyancat", "nyan", x => x)
+                ])).not.to.throw(Error);
+
+                expect(construct([
+                    new command.OptionalArgument("nyancat", "nyan", x => x),
+                    new command.Argument("foobar", x => x)
+                ])).to.throw(Error);
+            });
         });
 
         describe("#run(out, argv)", () => {
