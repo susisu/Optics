@@ -284,7 +284,7 @@ describe("command", () => {
                 expect(construct({})).to.throw(TypeError);
             });
 
-            it("should throw an error if a required argument occurs after an optional argument", () => {
+            it("should throw an error if a required argument appears after an optional argument", () => {
                 function construct(args) {
                     return () => {
                         new command.Command(
