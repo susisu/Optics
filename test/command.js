@@ -90,19 +90,36 @@ describe("command", () => {
             });
 
             it("should throw a TypeError if 'name' is not a string", () => {
-                expect(() => { new command.OptionalArgument(null, "none", x => x); }).to.throw(TypeError);
-                expect(() => { new command.OptionalArgument(undefined, "none", x => x); }).to.throw(TypeError);
-                expect(() => { new command.OptionalArgument(3.14, "none", x => x); }).to.throw(TypeError);
-                expect(() => { new command.OptionalArgument(true, "none", x => x); }).to.throw(TypeError);
-                expect(() => { new command.OptionalArgument({}, "none", x => x); }).to.throw(TypeError);
+                function construct(name) {
+                    return () => {
+                        new command.OptionalArgument(name, "none", x => x);
+                    };
+                }
+
+                expect(construct("foobar")).not.to.throw(TypeError);
+
+                expect(construct(null)).to.throw(TypeError);
+                expect(construct(undefined)).to.throw(TypeError);
+                expect(construct(3.14)).to.throw(TypeError);
+                expect(construct(true)).to.throw(TypeError);
+                expect(construct({})).to.throw(TypeError);
             });
 
             it("should throw a TypeError if 'reader' is not a function", () => {
-                expect(() => { new command.Argument("foobar", "none", null); }).to.throw(TypeError);
-                expect(() => { new command.Argument("foobar", "none", undefined); }).to.throw(TypeError);
-                expect(() => { new command.Argument("foobar", "none", 3.14); }).to.throw(TypeError);
-                expect(() => { new command.Argument("foobar", "none", true); }).to.throw(TypeError);
-                expect(() => { new command.Argument("foobar", "none", {}); }).to.throw(TypeError);
+                function construct(reader) {
+                    return () => {
+                        new command.OptionalArgument("foobar", "none", reader);
+                    };
+                }
+
+                expect(construct(x => x)).not.to.throw(TypeError);
+
+                expect(construct(null)).to.throw(TypeError);
+                expect(construct(undefined)).to.throw(TypeError);
+                expect(construct("foobar")).to.throw(TypeError);
+                expect(construct(3.14)).to.throw(TypeError);
+                expect(construct(true)).to.throw(TypeError);
+                expect(construct({})).to.throw(TypeError);
             });
         });
 
