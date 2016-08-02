@@ -74,10 +74,89 @@ describe("subcommand", () => {
 
     describe("CommandGroup", () => {
         describe("constructor(desc, subcmds, defaultCmd)", () => {
-            it("should create a new CommandGroup instance");
-            it("should throw a TypeError if 'desc' is not a string");
-            it("should throw a TypeError if 'subcmds' is not an array of Subcommand");
-            it("should throw a TypeError if 'defaultCmd' is not an instance of CommandBase nor null");
+            it("should create a new CommandGroup instance", () => {
+                let cmd = new command.Command(
+                    "test command",
+                    [],
+                    [],
+                    (args, opts) => {}
+                );
+                let subcmd = new subcommand.Subcommand("test", cmd);
+                let group = new subcommand.CommandGroup("test group", [subcmd], cmd);
+                expect(group).to.be.an.instanceOf(subcommand.CommandGroup);
+            });
+
+            it("should throw a TypeError if 'desc' is not a string", () => {
+                let cmd = new command.Command(
+                    "test command",
+                    [],
+                    [],
+                    (args, opts) => {}
+                );
+                let subcmd = new subcommand.Subcommand("test", cmd);
+                function construct(desc) {
+                    return () => {
+                        new subcommand.CommandGroup(desc, [subcmd], cmd);
+                    };
+                }
+                expect(construct("test group")).not.to.throw(TypeError);
+
+                expect(construct(null)).to.throw(TypeError);
+                expect(construct(undefined)).to.throw(TypeError);
+                expect(construct(3.14)).to.throw(TypeError);
+                expect(construct(true)).to.throw(TypeError);
+                expect(construct({})).to.throw(TypeError);
+                expect(construct(() => {})).to.throw(TypeError);
+            });
+
+            it("should throw a TypeError if 'subcmds' is not an array of Subcommand", () => {
+                let cmd = new command.Command(
+                    "test command",
+                    [],
+                    [],
+                    (args, opts) => {}
+                );
+                let subcmd = new subcommand.Subcommand("test", cmd);
+                function construct(subcmds) {
+                    return () => {
+                        new subcommand.CommandGroup("test group", subcmds, cmd);
+                    };
+                }
+                expect(construct([])).not.to.throw(TypeError);
+                expect(construct([subcmd])).not.to.throw(TypeError);
+
+                expect(construct(null)).to.throw(TypeError);
+                expect(construct(undefined)).to.throw(TypeError);
+                expect(construct("foobar")).to.throw(TypeError);
+                expect(construct(3.14)).to.throw(TypeError);
+                expect(construct(true)).to.throw(TypeError);
+                expect(construct({})).to.throw(TypeError);
+                expect(construct(() => {})).to.throw(TypeError);
+            });
+
+            it("should throw a TypeError if 'defaultCmd' is not an instance of CommandBase nor null", () => {
+                let cmd = new command.Command(
+                    "test command",
+                    [],
+                    [],
+                    (args, opts) => {}
+                );
+                let subcmd = new subcommand.Subcommand("test", cmd);
+                function construct(defaultCmd) {
+                    return () => {
+                        new subcommand.CommandGroup("test group", [subcmd], defaultCmd);
+                    };
+                }
+                expect(construct(cmd)).not.to.throw(TypeError);
+                expect(construct(null)).not.to.throw(TypeError);
+
+                expect(construct(undefined)).to.throw(TypeError);
+                expect(construct("foobar")).to.throw(TypeError);
+                expect(construct(3.14)).to.throw(TypeError);
+                expect(construct(true)).to.throw(TypeError);
+                expect(construct({})).to.throw(TypeError);
+                expect(construct(() => {})).to.throw(TypeError);
+            });
         });
     });
 });
