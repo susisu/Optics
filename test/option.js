@@ -219,7 +219,7 @@ describe("option", () => {
                 expect(construct("toolong")).to.throw(Error);
             });
 
-            it("should throw an error if 'longName' is not a string nor undefined", () => {
+            it("should throw a TypeError if 'longName' is not a string nor undefined", () => {
                 function construct(longName) {
                     return () => {
                         new option.Option(
@@ -259,7 +259,7 @@ describe("option", () => {
                 }).to.throw(Error);
             });
 
-            it("should throw a TypeError if 'arg' is not an instance of OptionalArgument nor null", () => {
+            it("should throw a TypeError if 'arg' is not an instance of OptionArgument nor null", () => {
                 function construct(arg) {
                     return () => {
                         new option.Option(
@@ -281,7 +281,7 @@ describe("option", () => {
                 expect(construct({})).to.throw(TypeError);
             });
 
-            it("should throw an error if 'desc' is not a string", () => {
+            it("should throw a TypeError if 'desc' is not a string", () => {
                 function construct(desc) {
                     return () => {
                         new option.Option(
