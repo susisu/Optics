@@ -301,5 +301,31 @@ describe("option", () => {
                 expect(construct({})).to.throw(TypeError);
             });
         });
-    })
+
+        describe("#isSpecial()", () => {
+            it("should always return false");
+        });
+    });
+
+    describe("SpecialOption", () => {
+        describe("constructor(shortName, longName, arg, desc, action)", () => {
+            it("should create a new SpecialOption instance");
+            it("should throw a TypeError if 'shortName' is not a string nor undefined");
+            it("should throw an error if 'shortName' is a string and its length is not 1");
+            it("should throw a TypeError if 'longName' is not a string nor undefined");
+            it("should throw an error if 'longName' is a string and its length is 0");
+            it("should throw an error if both 'shortName' and 'longName' are undefined");
+            it("should throw a TypeError if 'arg' is not an instance of OptionArgument nor null");
+            it("should throw a Typerror if 'desc' is not a string");
+            it("should throw a TypeError if 'action' is not a function");
+        });
+
+        describe("#isSpecial()", () => {
+            it("should always return true");
+        });
+
+        describe("#invoke(cmd, out, arg)", () => {
+            it("should call the action of the option with arguments 'cmd', 'out', and 'arg'");
+        });
+    });
 });
