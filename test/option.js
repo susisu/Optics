@@ -316,15 +316,165 @@ describe("option", () => {
 
     describe("SpecialOption", () => {
         describe("constructor(shortName, longName, arg, desc, action)", () => {
-            it("should create a new SpecialOption instance");
-            it("should throw a TypeError if 'shortName' is not a string nor undefined");
-            it("should throw an error if 'shortName' is a string and its length is not 1");
-            it("should throw a TypeError if 'longName' is not a string nor undefined");
-            it("should throw an error if 'longName' is a string and its length is 0");
-            it("should throw an error if both 'shortName' and 'longName' are undefined");
-            it("should throw a TypeError if 'arg' is not an instance of OptionArgument nor null");
-            it("should throw a Typerror if 'desc' is not a string");
-            it("should throw a TypeError if 'action' is not a function");
+            it("should create a new SpecialOption instance", () => {
+                let spopt = new option.SpecialOption(
+                    "t", "test",
+                    new option.OptionArgument("nyan", x => x),
+                    "test option",
+                    (cmd, out, arg) => {}
+                );
+                expect(spopt).to.be.an.instanceOf(option.SpecialOption);
+            });
+
+            it("should throw a TypeError if 'shortName' is not a string nor undefined", () => {
+                function construct(shortName) {
+                    return () => {
+                        new option.SpecialOption(
+                            shortName, "test",
+                            new option.OptionArgument("nyan", x => x),
+                            "test option",
+                            (cmd, out, arg) => {}
+                        );
+                    };
+                }
+
+                expect(construct("t")).not.to.throw(TypeError);
+                expect(construct(undefined)).not.to.throw(TypeError);
+
+                expect(construct(null)).to.throw(TypeError);
+                expect(construct(3.14)).to.throw(TypeError);
+                expect(construct(true)).to.throw(TypeError);
+                expect(construct({})).to.throw(TypeError);
+                expect(construct(() => {})).to.throw(TypeError);
+            });
+
+            it("should throw an error if 'shortName' is a string and its length is not 1", () => {
+                function construct(shortName) {
+                    return () => {
+                        new option.SpecialOption(
+                            shortName, "test",
+                            new option.OptionArgument("nyan", x => x),
+                            "test option",
+                            (cmd, out, arg) => {}
+                        );
+                    };
+                }
+
+                expect(construct("")).to.throw(Error);
+                expect(construct("toolong")).to.throw(Error);
+            });
+
+            it("should throw a TypeError if 'longName' is not a string nor undefined", () => {
+                function construct(longName) {
+                    return () => {
+                        new option.SpecialOption(
+                            "t", longName,
+                            new option.OptionArgument("nyan", x => x),
+                            "test option",
+                            (cmd, out, arg) => {}
+                        );
+                    };
+                }
+
+                expect(construct("test")).not.to.throw(TypeError);
+                expect(construct(undefined)).not.to.throw(TypeError);
+
+                expect(construct(null)).to.throw(TypeError);
+                expect(construct(3.14)).to.throw(TypeError);
+                expect(construct(true)).to.throw(TypeError);
+                expect(construct({})).to.throw(TypeError);
+                expect(construct(() => {})).to.throw(TypeError);
+            });
+
+            it("should throw an error if 'longName' is a string and its length is 0", () => {
+                expect(() => {
+                    new option.SpecialOption(
+                        "t", "",
+                        new option.OptionArgument("nyan", x => x),
+                        "test option",
+                        (cmd, out, arg) => {}
+                    );
+                }).to.throw(Error);
+            });
+
+            it("should throw an error if both 'shortName' and 'longName' are undefined", () => {
+                expect(() => {
+                    new option.SpecialOption(
+                        undefined, undefined,
+                        new option.OptionArgument("nyan", x => x),
+                        "test option",
+                        (cmd, out, arg) => {}
+                    );
+                }).to.throw(Error);
+            });
+
+            it("should throw a TypeError if 'arg' is not an instance of OptionArgument nor null", () => {
+                function construct(arg) {
+                    return () => {
+                        new option.SpecialOption(
+                            "t", "test",
+                            arg,
+                            "test option",
+                            (cmd, out, arg) => {}
+                        );
+                    };
+                }
+
+                expect(construct(new option.OptionArgument("nyan", x => x))).not.to.throw(TypeError);
+                expect(construct(new option.OptionalOptionArgument("nyan", "cat", x => x))).not.to.throw(TypeError);
+                expect(construct(null)).not.to.throw(TypeError);
+
+                expect(construct(undefined)).to.throw(TypeError);
+                expect(construct("foobar")).to.throw(TypeError);
+                expect(construct(3.14)).to.throw(TypeError);
+                expect(construct(true)).to.throw(TypeError);
+                expect(construct({})).to.throw(TypeError);
+                expect(construct(() => {})).to.throw(TypeError);
+            });
+
+            it("should throw a Typerror if 'desc' is not a string", () => {
+                function construct(desc) {
+                    return () => {
+                        new option.SpecialOption(
+                            "t", "test",
+                            new option.OptionArgument("nyan", x => x),
+                            desc,
+                            (cmd, out, arg) => {}
+                        );
+                    };
+                }
+
+                expect(construct("test option")).not.to.throw(TypeError);
+
+                expect(construct(null)).to.throw(TypeError);
+                expect(construct(undefined)).to.throw(TypeError);
+                expect(construct(3.14)).to.throw(TypeError);
+                expect(construct(true)).to.throw(TypeError);
+                expect(construct({})).to.throw(TypeError);
+                expect(construct(() => {})).to.throw(TypeError);
+            });
+
+            it("should throw a TypeError if 'action' is not a function", () => {
+                function construct(action) {
+                    return () => {
+                        new option.SpecialOption(
+                            "t", "test",
+                            new option.OptionArgument("nyan", x => x),
+                            "test option",
+                            action
+                        );
+                    };
+                }
+
+                expect(construct((cmd, out, arg) => {})).not.to.throw(TypeError);
+
+                expect(construct(null)).to.throw(TypeError);
+                expect(construct(undefined)).to.throw(TypeError);
+                expect(construct("foobar")).to.throw(TypeError);
+                expect(construct(3.14)).to.throw(TypeError);
+                expect(construct(true)).to.throw(TypeError);
+                expect(construct({})).to.throw(TypeError);
+            });
         });
 
         describe("#isSpecial()", () => {
