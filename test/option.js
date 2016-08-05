@@ -303,7 +303,14 @@ describe("option", () => {
         });
 
         describe("#isSpecial()", () => {
-            it("should always return false");
+            it("should always return false", () => {
+                let opt = new option.Option(
+                    "t", "test",
+                    new option.OptionArgument("nyan", x => x),
+                    "test option"
+                );
+                expect(opt.isSpecial()).to.be.false;
+            });
         });
     });
 
