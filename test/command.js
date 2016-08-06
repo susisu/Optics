@@ -526,9 +526,94 @@ describe("command", () => {
         });
 
         describe("#invoke(cmd, out, arg)", () => {
-            it("should call the action of the option with arguments 'cmd', 'out', and 'arg'");
-            it("should throw a TypeError if 'cmd' is not an instance of CommandBase");
-            it("should throw a TypeError if 'out' is not an instance of Output");
+            it("should call the action of the option with arguments 'cmd', 'out', and 'arg'", () => {
+                let spopt = new command.SpecialOption(
+                    "t", "test",
+                    new option.OptionArgument("nyan", x => x),
+                    "test option",
+                    (cmd, out, arg) => [cmd, out, arg]
+                );
+                let cmd = new command.Command(
+                    "test command",
+                    [],
+                    [],
+                    (args, opts) => {}
+                );
+                let out = new output.Output(
+                    _ => { throw new Error("unexpected output"); },
+                    _ => { throw new Error("unexpected output"); }
+                );
+                expect(spopt.invoke(cmd, out, "foobar")).to.deep.equal([cmd, out, "foobar"]);
+                expect(spopt.invoke(cmd, out, 3.14)).to.deep.equal([cmd, out, 3.14]);
+            });
+
+            it("should throw a TypeError if 'cmd' is not an instance of CommandBase", () => {
+                let spopt = new command.SpecialOption(
+                    "t", "test",
+                    new option.OptionArgument("nyan", x => x),
+                    "test option",
+                    (cmd, out, arg) => [cmd, out, arg]
+                );
+                let cmd = new command.Command(
+                    "test command",
+                    [],
+                    [],
+                    (args, opts) => {}
+                );
+                let out = new output.Output(
+                    _ => { throw new Error("unexpected output"); },
+                    _ => { throw new Error("unexpected output"); }
+                );
+                function call(cmd) {
+                    return () => {
+                        spopt.invoke(cmd, out, "foobar");
+                    }
+                }
+
+                expect(call(cmd)).not.to.throw(TypeError);
+
+                expect(call(null)).to.throw(TypeError);
+                expect(call(undefined)).to.throw(TypeError);
+                expect(call("foobar")).to.throw(TypeError);
+                expect(call(3.14)).to.throw(TypeError);
+                expect(call(true)).to.throw(TypeError);
+                expect(call({})).to.throw(TypeError);
+                expect(call(() => {})).to.throw(TypeError);
+            });
+
+            it("should throw a TypeError if 'out' is not an instance of Output", () => {
+                let spopt = new command.SpecialOption(
+                    "t", "test",
+                    new option.OptionArgument("nyan", x => x),
+                    "test option",
+                    (cmd, out, arg) => [cmd, out, arg]
+                );
+                let cmd = new command.Command(
+                    "test command",
+                    [],
+                    [],
+                    (args, opts) => {}
+                );
+                let out = new output.Output(
+                    _ => { throw new Error("unexpected output"); },
+                    _ => { throw new Error("unexpected output"); }
+                );
+                function call(out) {
+                    return () => {
+                        spopt.invoke(cmd, out, "foobar");
+                    }
+                }
+
+                expect(call(out)).not.to.throw(TypeError);
+
+                expect(call(null)).to.throw(TypeError);
+                expect(call(undefined)).to.throw(TypeError);
+                expect(call("foobar")).to.throw(TypeError);
+                expect(call(3.14)).to.throw(TypeError);
+                expect(call(true)).to.throw(TypeError);
+                expect(call({})).to.throw(TypeError);
+                expect(call(() => {})).to.throw(TypeError);
+            });
         });
     });
 });
