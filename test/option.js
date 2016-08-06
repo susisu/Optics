@@ -478,7 +478,15 @@ describe("option", () => {
         });
 
         describe("#isSpecial()", () => {
-            it("should always return true");
+            it("should always return true", () => {
+                let spopt = new option.SpecialOption(
+                    "t", "test",
+                    new option.OptionArgument("nyan", x => x),
+                    "test option",
+                    (cmd, out, arg) => {}
+                );
+                expect(spopt.isSpecial()).to.be.true;
+            });
         });
 
         describe("#invoke(cmd, out, arg)", () => {
