@@ -469,7 +469,7 @@ describe("command", () => {
                 expect(construct(() => {})).to.throw(TypeError);
             });
 
-            it("should throw a Typerror if 'desc' is not a string", () => {
+            it("should throw a TypeError if 'desc' is not a string", () => {
                 function construct(desc) {
                     return () => {
                         new command.SpecialOption(
