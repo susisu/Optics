@@ -343,10 +343,11 @@ describe("command", () => {
         });
 
         describe("#run(out, argv)", () => {
-            it("should parse 'argv' and call the action with arguments and options if arguments are correct");
-            it("should throw an error if 'out' is not an instance of Output");
-            it("should throw an error if 'argv' is not an array");
-            it("should write error message to 'out.err' if arguments are incorrect");
+            it("should throw a TypeError if 'out' is not an instance of Output");
+            it("should throw a TypeError if 'argv' is not an array of string");
+            it("should parse 'argv' and call the action with arguments and options if parsing succeeded");
+            it("should parse 'argv' and call 'out.err' with an error message if parsing failed");
+            it("should stop parsing if a special option is invoked and its return value is false");
         });
     });
 
