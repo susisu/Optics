@@ -343,8 +343,64 @@ describe("command", () => {
         });
 
         describe("#run(out, argv)", () => {
-            it("should throw a TypeError if 'out' is not an instance of Output");
-            it("should throw a TypeError if 'argv' is not an array of string");
+            it("should throw a TypeError if 'out' is not an instance of Output", () => {
+                let cmd = new command.Command(
+                    "test command",
+                    [],
+                    [],
+                    (args, opts) => {}
+                );
+                let out = new output.Output(
+                    _ => { throw new Error("unexpected output"); },
+                    _ => { throw new Error("unexpected output"); }
+                );
+                function call(out) {
+                    return () => {
+                        cmd.run(out, []);
+                    };
+                }
+
+                expect(call(out)).not.to.throw(TypeError);
+
+                expect(call(null)).to.throw(TypeError);
+                expect(call(undefined)).to.throw(TypeError);
+                expect(call("foobar")).to.throw(TypeError);
+                expect(call(3.14)).to.throw(TypeError);
+                expect(call(true)).to.throw(TypeError);
+                expect(call({})).to.throw(TypeError);
+                expect(call(() => {})).to.throw(TypeError);
+            });
+
+            it("should throw a TypeError if 'argv' is not an array of string", () => {
+                let cmd = new command.Command(
+                    "test command",
+                    [],
+                    [],
+                    (args, opts) => {}
+                );
+                let out = new output.Output(
+                    _ => { throw new Error("unexpected output"); },
+                    _ => { throw new Error("unexpected output"); }
+                );
+                function call(argv) {
+                    return () => {
+                        cmd.run(out, argv);
+                    };
+                }
+
+                expect(call([])).not.to.throw(TypeError);
+                expect(call(["-e", "wWWwwwwWWww"])).not.to.throw(TypeError);
+
+                expect(call(null)).to.throw(TypeError);
+                expect(call(undefined)).to.throw(TypeError);
+                expect(call("foobar")).to.throw(TypeError);
+                expect(call(3.14)).to.throw(TypeError);
+                expect(call(true)).to.throw(TypeError);
+                expect(call({})).to.throw(TypeError);
+                expect(call(() => {})).to.throw(TypeError);
+                expect(call([3.14, "hello", true])).to.throw(TypeError);
+            });
+
             it("should parse 'argv' and call the action with arguments and options if parsing succeeded");
             it("should parse 'argv' and call 'out.err' with an error message if parsing failed");
             it("should stop parsing if a special option is invoked and its return value is false");
