@@ -730,7 +730,7 @@ describe("command", () => {
                             ],
                             (args, opts) => {
                                 expect(args).to.deep.equal({});
-                                expect(opts).to.deep.equal({ t: "bar" });
+                                expect(opts).to.deep.equal({ test: "bar" });
                                 flag = true;
                             }
                         );
