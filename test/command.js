@@ -401,7 +401,498 @@ describe("command", () => {
                 expect(call([3.14, "hello", true])).to.throw(TypeError);
             });
 
-            it("should parse 'argv' and call the action with arguments and options if parsing succeeded");
+            it("should parse 'argv' and call the action with arguments and options if parsing succeeded", () => {
+                let out = new output.Output(
+                    _ => { throw new Error("unexpected output"); },
+                    _ => { throw new Error("unexpected output"); }
+                );
+                // no arguments, no options
+                {
+                    let flag = false;
+                    let cmd = new command.Command(
+                        "test command",
+                        [],
+                        [],
+                        (args, opts) => {
+                            expect(args).to.deep.equal({});
+                            expect(opts).to.deep.equal({});
+                            flag = true;
+                        }
+                    );
+                    cmd.run(out, []);
+                    expect(flag).to.be.true;
+                }
+                // arguments but ignored, no options
+                {
+                    let flag = false;
+                    let cmd = new command.Command(
+                        "test command",
+                        [],
+                        [],
+                        (args, opts) => {
+                            expect(args).to.deep.equal({});
+                            expect(opts).to.deep.equal({});
+                            flag = true;
+                        }
+                    );
+                    cmd.run(out, ["foobar", "nyancat"]);
+                    expect(flag).to.be.true;
+                }
+                // one argument, no options
+                {
+                    let flag = false;
+                    let cmd = new command.Command(
+                        "test command",
+                        [
+                            new command.Argument("param", x => x)
+                        ],
+                        [],
+                        (args, opts) => {
+                            expect(args).to.deep.equal({ param: "foobar" });
+                            expect(opts).to.deep.equal({});
+                            flag = true;
+                        }
+                    );
+                    cmd.run(out, ["foobar", "nyancat"]);
+                    expect(flag).to.be.true;
+                }
+                // multiple arguments, no options
+                {
+                    {
+                        let flag = false;
+                        let cmd = new command.Command(
+                            "test command",
+                            [
+                                new command.Argument("param", x => x),
+                                new command.OptionalArgument("num", 1, x => parseInt(x))
+                            ],
+                            [],
+                            (args, opts) => {
+                                expect(args).to.deep.equal({
+                                    param: "foobar",
+                                    num  : 1
+                                });
+                                expect(opts).to.deep.equal({});
+                                flag = true;
+                            }
+                        );
+                        cmd.run(out, ["foobar"]);
+                        expect(flag).to.be.true;
+                    }
+                    {
+                        let flag = false;
+                        let cmd = new command.Command(
+                            "test command",
+                            [
+                                new command.Argument("param", x => x),
+                                new command.OptionalArgument("num", 1, x => parseInt(x))
+                            ],
+                            [],
+                            (args, opts) => {
+                                expect(args).to.deep.equal({
+                                    param: "foobar",
+                                    num: 24
+                                });
+                                expect(opts).to.deep.equal({});
+                                flag = true;
+                            }
+                        );
+                        cmd.run(out, ["foobar", "24"]);
+                        expect(flag).to.be.true;
+                    }
+                }
+                // no arguments, one option without argument
+                {
+                    {
+                        let flag = false;
+                        let cmd = new command.Command(
+                            "test command",
+                            [],
+                            [new option.Option("t", "test", null, "test option")],
+                            (args, opts) => {
+                                expect(args).to.deep.equal({});
+                                expect(opts).to.deep.equal({});
+                                flag = true;
+                            }
+                        );
+                        cmd.run(out, []);
+                        expect(flag).to.be.true;
+                    }
+                    {
+                        let flag = false;
+                        let cmd = new command.Command(
+                            "test command",
+                            [],
+                            [new option.Option("t", undefined, null, "test option")],
+                            (args, opts) => {
+                                expect(args).to.deep.equal({});
+                                expect(opts).to.deep.equal({ t: true });
+                                flag = true;
+                            }
+                        );
+                        cmd.run(out, ["-t"]);
+                        expect(flag).to.be.true;
+                    }
+                    {
+                        let flag = false;
+                        let cmd = new command.Command(
+                            "test command",
+                            [],
+                            [new option.Option(undefined, "test", null, "test option")],
+                            (args, opts) => {
+                                expect(args).to.deep.equal({});
+                                expect(opts).to.deep.equal({ test: true });
+                                flag = true;
+                            }
+                        );
+                        cmd.run(out, ["--test"]);
+                        expect(flag).to.be.true;
+                    }
+                    {
+                        let flag = false;
+                        let cmd = new command.Command(
+                            "test command",
+                            [],
+                            [new option.Option("t", "test", null, "test option")],
+                            (args, opts) => {
+                                expect(args).to.deep.equal({});
+                                expect(opts).to.deep.equal({ test: true });
+                                flag = true;
+                            }
+                        );
+                        cmd.run(out, ["-t"]);
+                        expect(flag).to.be.true;
+                    }
+                }
+                // no arguments, one option with required argument
+                {
+                    {
+                        let flag = false;
+                        let cmd = new command.Command(
+                            "test command",
+                            [],
+                            [
+                                new option.Option(
+                                    "t", undefined,
+                                    new option.OptionArgument("foo", x => x),
+                                    "test option"
+                                )
+                            ],
+                            (args, opts) => {
+                                expect(args).to.deep.equal({});
+                                expect(opts).to.deep.equal({ t: "bar" });
+                                flag = true;
+                            }
+                        );
+                        cmd.run(out, ["-tbar"]);
+                        expect(flag).to.be.true;
+                    }
+                    {
+                        let flag = false;
+                        let cmd = new command.Command(
+                            "test command",
+                            [],
+                            [
+                                new option.Option(
+                                    "t", undefined,
+                                    new option.OptionArgument("foo", x => x),
+                                    "test option"
+                                )
+                            ],
+                            (args, opts) => {
+                                expect(args).to.deep.equal({});
+                                expect(opts).to.deep.equal({ t: "bar" });
+                                flag = true;
+                            }
+                        );
+                        cmd.run(out, ["-t", "bar"]);
+                        expect(flag).to.be.true;
+                    }
+                    {
+                        let flag = false;
+                        let cmd = new command.Command(
+                            "test command",
+                            [],
+                            [
+                                new option.Option(
+                                    undefined, "test",
+                                    new option.OptionArgument("foo", x => x),
+                                    "test option"
+                                )
+                            ],
+                            (args, opts) => {
+                                expect(args).to.deep.equal({});
+                                expect(opts).to.deep.equal({ test: "bar" });
+                                flag = true;
+                            }
+                        );
+                        cmd.run(out, ["--test=bar"]);
+                        expect(flag).to.be.true;
+                    }
+                    {
+                        let flag = false;
+                        let cmd = new command.Command(
+                            "test command",
+                            [],
+                            [
+                                new option.Option(
+                                    undefined, "test",
+                                    new option.OptionArgument("foo", x => x),
+                                    "test option"
+                                )
+                            ],
+                            (args, opts) => {
+                                expect(args).to.deep.equal({});
+                                expect(opts).to.deep.equal({ test: "bar" });
+                                flag = true;
+                            }
+                        );
+                        cmd.run(out, ["--test", "bar"]);
+                        expect(flag).to.be.true;
+                    }
+                    {
+                        let flag = false;
+                        let cmd = new command.Command(
+                            "test command",
+                            [],
+                            [
+                                new option.Option(
+                                    "t", "test",
+                                    new option.OptionArgument("foo", x => x.toUpperCase()),
+                                    "test option"
+                                )
+                            ],
+                            (args, opts) => {
+                                expect(args).to.deep.equal({});
+                                expect(opts).to.deep.equal({ test: "BAR" });
+                                flag = true;
+                            }
+                        );
+                        cmd.run(out, ["-tbar"]);
+                        expect(flag).to.be.true;
+                    }
+                }
+                // no arguments, one option with optional argument
+                {
+                    {
+                        let flag = false;
+                        let cmd = new command.Command(
+                            "test command",
+                            [],
+                            [
+                                new option.Option(
+                                    "t", undefined,
+                                    new option.OptionalOptionArgument("foo", "FOO", x => x),
+                                    "test option"
+                                )
+                            ],
+                            (args, opts) => {
+                                expect(args).to.deep.equal({});
+                                expect(opts).to.deep.equal({ t: "bar" });
+                                flag = true;
+                            }
+                        );
+                        cmd.run(out, ["-tbar"]);
+                        expect(flag).to.be.true;
+                    }
+                    {
+                        let flag = false;
+                        let cmd = new command.Command(
+                            "test command",
+                            [],
+                            [
+                                new option.Option(
+                                    "t", undefined,
+                                    new option.OptionalOptionArgument("foo", "FOO", x => x),
+                                    "test option"
+                                )
+                            ],
+                            (args, opts) => {
+                                expect(args).to.deep.equal({});
+                                expect(opts).to.deep.equal({ t: "FOO" });
+                                flag = true;
+                            }
+                        );
+                        cmd.run(out, ["-t", "bar"]);
+                        expect(flag).to.be.true;
+                    }
+                    {
+                        let flag = false;
+                        let cmd = new command.Command(
+                            "test command",
+                            [],
+                            [
+                                new option.Option(
+                                    undefined, "test",
+                                    new option.OptionalOptionArgument("foo", "FOO", x => x),
+                                    "test option"
+                                )
+                            ],
+                            (args, opts) => {
+                                expect(args).to.deep.equal({});
+                                expect(opts).to.deep.equal({ t: "bar" });
+                                flag = true;
+                            }
+                        );
+                        cmd.run(out, ["--test=bar"]);
+                        expect(flag).to.be.true;
+                    }
+                    {
+                        let flag = false;
+                        let cmd = new command.Command(
+                            "test command",
+                            [],
+                            [
+                                new option.Option(
+                                    undefined, "test",
+                                    new option.OptionalOptionArgument("foo", "FOO", x => x),
+                                    "test option"
+                                )
+                            ],
+                            (args, opts) => {
+                                expect(args).to.deep.equal({});
+                                expect(opts).to.deep.equal({ test: "FOO" });
+                                flag = true;
+                            }
+                        );
+                        cmd.run(out, ["--test", "bar"]);
+                        expect(flag).to.be.true;
+                    }
+                    {
+                        let flag = false;
+                        let cmd = new command.Command(
+                            "test command",
+                            [],
+                            [
+                                new option.Option(
+                                    "t", "test",
+                                    new option.OptionalOptionArgument("foo", "FOO", x => x.toUpperCase()),
+                                    "test option"
+                                )
+                            ],
+                            (args, opts) => {
+                                expect(args).to.deep.equal({});
+                                expect(opts).to.deep.equal({ test: "BAR" });
+                                flag = true;
+                            }
+                        );
+                        cmd.run(out, ["-tbar"]);
+                        expect(flag).to.be.true;
+                    }
+                }
+                // no arguments, multiple options
+                {
+                    {
+                        let flag = false;
+                        let cmd = new command.Command(
+                            "test command",
+                            [],
+                            [
+                                new option.Option(
+                                    "s", undefined,
+                                    null,
+                                    "foo"
+                                ),
+                                new option.Option(
+                                    "t", undefined,
+                                    null,
+                                    "bar"
+                                )
+                            ],
+                            (args, opts) => {
+                                expect(args).to.deep.equal({});
+                                expect(opts).to.deep.equal({ s: true, t: true });
+                                flag = true;
+                            }
+                        );
+                        cmd.run(out, ["-st"]);
+                        expect(flag).to.be.true;
+                    }
+                    {
+                        let flag = false;
+                        let cmd = new command.Command(
+                            "test command",
+                            [],
+                            [
+                                new option.Option(
+                                    "t", undefined,
+                                    null,
+                                    "test"
+                                ),
+                                new option.Option(
+                                    "f", "foo",
+                                    new option.OptionArgument("bar", x => x.toLowerCase()),
+                                    "foobar"
+                                ),
+                                new option.Option(
+                                    "n", "nyan",
+                                    new option.OptionalOptionArgument("cat", "DOG", x => x.toUpperCase()),
+                                    "nyancat"
+                                )
+                            ],
+                            (args, opts) => {
+                                expect(args).to.deep.equal({});
+                                expect(opts).to.deep.equal({
+                                    t   : true,
+                                    foo : "bar",
+                                    nyan: "CAT"
+                                });
+                                flag = true;
+                            }
+                        );
+                        cmd.run(out, ["--nyan=cat", "-tfBAR"]);
+                        expect(flag).to.be.true;
+                    }
+                }
+                // multiple arguments, multiple options
+                {
+                    let flag = false;
+                    let cmd = new command.Command(
+                        "test command",
+                        [
+                            new command.Argument("filename", x => x),
+                            new command.OptionalArgument("num", 1, x => parseInt(x))
+                        ],
+                        [
+                            new option.Option(
+                                "s", undefined,
+                                null,
+                                "test1"
+                            ),
+                            new option.Option(
+                                "t", undefined,
+                                null,
+                                "test2"
+                            ),
+                            new option.Option(
+                                "f", "foo",
+                                new option.OptionArgument("bar", x => x.toLowerCase()),
+                                "foobar"
+                            ),
+                            new option.Option(
+                                "n", "nyan",
+                                new option.OptionalOptionArgument("cat", "DOG", x => x.toUpperCase()),
+                                "nyancat"
+                            )
+                        ],
+                        (args, opts) => {
+                            expect(args).to.deep.equal({
+                                filename: "foobar.txt",
+                                num     : 24
+                            });
+                            expect(opts).to.deep.equal({
+                                s   : true,
+                                foo : "bar",
+                                nyan: "DOG"
+                            });
+                            flag = true;
+                        }
+                    );
+                    cmd.run(out, ["-s", "--foo", "BAR", "foobar.txt", "--nyan", "24"]);
+                    expect(flag).to.be.true;
+                }
+            });
+
             it("should parse 'argv' and call 'out.err' with an error message if parsing failed");
             it("should stop parsing if a special option is invoked and its return value is false");
         });
