@@ -893,8 +893,161 @@ describe("command", () => {
                 }
             });
 
-            it("should parse 'argv' and call 'out.err' with an error message if parsing failed");
-            it("should stop parsing if a special option is invoked and its return value is false");
+            it("should parse 'argv' and call 'out.err' with an error message if parsing failed", () => {
+                // too few argument
+                {
+                    let flag = false;
+                    let cmd = new command.Command(
+                        "test command",
+                        [
+                            new command.Argument("filename", x => x),
+                            new command.Argument("num", x => parseInt(x))
+                        ],
+                        [],
+                        (args, opts) => { throw new Error("unexpected call"); }
+                    );
+                    let out = new output.Output(
+                        _ => { throw new Error("unexpected output"); },
+                        mes => {
+                            expect(mes).to.equal("error: too few argument\n");
+                            flag = true;
+                        }
+                    );
+                    cmd.run(out, ["foobar.txt"]);
+                    expect(flag).to.be.true;
+                }
+                // unknown option
+                {
+                    let flag = false;
+                    let cmd = new command.Command(
+                        "test command",
+                        [],
+                        [],
+                        (args, opts) => { throw new Error("unexpected call"); }
+                    );
+                    let out = new output.Output(
+                        _ => { throw new Error("unexpected output"); },
+                        mes => {
+                            expect(mes).to.equal("error: unknown option `-n'\n");
+                            flag = true;
+                        }
+                    );
+                    cmd.run(out, ["-n"]);
+                    expect(flag).to.be.true;
+                }
+                {
+                    let flag = false;
+                    let cmd = new command.Command(
+                        "test command",
+                        [],
+                        [],
+                        (args, opts) => { throw new Error("unexpected call"); }
+                    );
+                    let out = new output.Output(
+                        _ => { throw new Error("unexpected output"); },
+                        mes => {
+                            expect(mes).to.equal("error: unknown option `--nyan'\n");
+                            flag = true;
+                        }
+                    );
+                    cmd.run(out, ["--nyan"]);
+                    expect(flag).to.be.true;
+                }
+            });
+
+            it("should stop parsing if a special option is invoked and its return value is truthy", () => {
+                {
+                    let flag = false;
+                    let cmd = new command.Command(
+                        "test command",
+                        [
+                            new command.Argument("filename", x => x),
+                            new command.Argument("num", x => parseInt(x))
+                        ],
+                        [
+                            new option.Option(
+                                "f", "foo",
+                                new option.OptionArgument("string", x => x),
+                                "foo"
+                            ),
+                            new option.Option(
+                                "b", "bar",
+                                new option.OptionArgument("string", x => x),
+                                "bar"
+                            ),
+                            new command.SpecialOption(
+                                "n", "nyan",
+                                new option.OptionArgument("name", x => x.toUpperCase()),
+                                "nyancat",
+                                (_cmd, _out, arg) => {
+                                    expect(_cmd).to.equal(cmd);
+                                    expect(_out).to.equal(out);
+                                    expect(arg).to.equal("CAT");
+                                }
+                            )
+                        ],
+                        (args, opts) => {
+                            expect(args).to.deep.equal({
+                                filename: "foobar.txt",
+                                num     : 24
+                            });
+                            expect(opts).to.deep.equal({
+                                foo : "FOO",
+                                bar : "BAR",
+                                nyan: "CAT"
+                            });
+                            flag = true;
+                        }
+                    );
+                    let out = new output.Output(
+                        _ => { throw new Error("unexpected output"); },
+                        _ => { throw new Error("unexpected output"); }
+                    );
+                    cmd.run(out, ["foobar.txt", "--foo", "FOO", "--nyan", "cat" , "--bar", "BAR", "24"]);
+                    expect(flag).to.be.true;
+                }
+                {
+                    let flag = false;
+                    let cmd = new command.Command(
+                        "test command",
+                        [
+                            new command.Argument("filename", x => x),
+                            new command.Argument("num", _ => { throw new Error("unexpected call"); })
+                        ],
+                        [
+                            new option.Option(
+                                "f", "foo",
+                                new option.OptionArgument("string", x => x),
+                                "foo"
+                            ),
+                            new option.Option(
+                                "b", "bar",
+                                new option.OptionArgument("string", _ => { throw new Error("unexpected call"); }),
+                                "bar"
+                            ),
+                            new command.SpecialOption(
+                                "n", "nyan",
+                                new option.OptionArgument("name", x => x.toUpperCase()),
+                                "nyancat",
+                                (_cmd, _out, arg) => {
+                                    expect(_cmd).to.equal(cmd);
+                                    expect(_out).to.equal(out);
+                                    expect(arg).to.equal("CAT");
+                                    flag = true;
+                                    return true;
+                                }
+                            )
+                        ],
+                        (args, opts) => { throw new Error("unexpected call"); }
+                    );
+                    let out = new output.Output(
+                        _ => { throw new Error("unexpected output"); },
+                        _ => { throw new Error("unexpected output"); }
+                    );
+                    cmd.run(out, ["foobar.txt", "--foo", "FOO", "--nyan", "cat" , "--bar", "BAR", "24"]);
+                    expect(flag).to.be.true;
+                }
+            });
         });
     });
 
