@@ -61,5 +61,85 @@ describe("output", () => {
                 expect(construct({})).to.throw(TypeError);
             });
         });
+
+        describe("#output(msg)", () => {
+            it("should call the function 'out' with an argument 'msg'", () => {
+                let flag = false;
+                let out = new output.Output(
+                    msg => {
+                        expect(msg).to.equal("test message");
+                        flag = true;
+                    },
+                    _ => { throw new Error("unexpected output"); }
+                );
+                out.output("test message");
+                expect(flag).to.be.true;
+            });
+
+            it("should throw a TypeError if 'msg' is not a string", () => {
+                let out = new output.Output(
+                    msg => {
+                        if (typeof msg !== "string") {
+                            throw new Error("unexpected output");
+                        }
+                    },
+                    _ => { throw new Error("unexpected output"); }
+                );
+                function call(msg) {
+                    return () => {
+                        out.output(msg);
+                    };
+                }
+
+                expect(call("test message")).not.to.throw(TypeError);
+
+                expect(call(null)).to.throw(TypeError);
+                expect(call(undefined)).to.throw(TypeError);
+                expect(call(3.14)).to.throw(TypeError);
+                expect(call(true)).to.throw(TypeError);
+                expect(call({})).to.throw(TypeError);
+                expect(call(() => {})).to.throw(TypeError);
+            });
+        });
+
+        describe("#error(msg)", () => {
+            it("should call the function 'err' with an argument 'msg'", () => {
+                let flag = false;
+                let out = new output.Output(
+                    _ => { throw new Error("unexpected output"); },
+                    msg => {
+                        expect(msg).to.equal("test message");
+                        flag = true;
+                    }
+                );
+                out.error("test message");
+                expect(flag).to.be.true;
+            });
+
+            it("should throw a TypeError if 'msg' is not a string", () => {
+                let out = new output.Output(
+                    _ => { throw new Error("unexpected output"); },
+                    msg => {
+                        if (typeof msg !== "string") {
+                            throw new Error("unexpected output");
+                        }
+                    }
+                );
+                function call(msg) {
+                    return () => {
+                        out.error(msg);
+                    };
+                }
+
+                expect(call("test message")).not.to.throw(TypeError);
+
+                expect(call(null)).to.throw(TypeError);
+                expect(call(undefined)).to.throw(TypeError);
+                expect(call(3.14)).to.throw(TypeError);
+                expect(call(true)).to.throw(TypeError);
+                expect(call({})).to.throw(TypeError);
+                expect(call(() => {})).to.throw(TypeError);
+            });
+        });
     });
 });
