@@ -878,6 +878,29 @@ describe("command", () => {
                         cmd.run(out, ["--nyan=cat", "-tfBAR"]);
                         expect(flag).to.be.true;
                     }
+                    {
+                        let flag = false;
+                        let cmd = new command.Command(
+                            "test command",
+                            [],
+                            [
+                                new option.Option(
+                                    "f", "foo",
+                                    new option.OptionArgument("bar", (x, acc) => parseInt(x) + (acc || 0)),
+                                    "foobar"
+                                )
+                            ],
+                            (args, opts) => {
+                                expect(args).to.deep.equal({});
+                                expect(opts).to.deep.equal({
+                                    foo: 6
+                                });
+                                flag = true;
+                            }
+                        );
+                        cmd.run(out, ["--foo=1", "--foo=2", "--foo=3"]);
+                        expect(flag).to.be.true;
+                    }
                 }
                 // multiple arguments, multiple options
                 {
@@ -986,6 +1009,31 @@ describe("command", () => {
                         }
                     );
                     cmd.run(out, ["--nyan"]);
+                    expect(flag).to.be.true;
+                }
+                // missing option argument
+                {
+                    let flag = false;
+                    let cmd = new command.Command(
+                        "test command",
+                        [],
+                        [
+                            new option.Option(
+                                "f", "foo",
+                                new option.OptionArgument("bar", x => x),
+                                "foobar"
+                            )
+                        ],
+                        (args, opts) => { throw new Error("unexpected call"); }
+                    );
+                    let out = new output.Output(
+                        _ => { throw new Error("unexpected output"); },
+                        mes => {
+                            expect(mes).to.equal("error: missing argument for `--foo`\n");
+                            flag = true;
+                        }
+                    );
+                    cmd.run(out, ["--foo"]);
                     expect(flag).to.be.true;
                 }
             });
