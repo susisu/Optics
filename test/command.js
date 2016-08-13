@@ -80,6 +80,41 @@ describe("command", () => {
                 expect(() => { arg.getDefaultValue(); }).to.throw(Error);
             });
         });
+
+        describe("#read(val)", () => {
+            it("should call 'reader' with an argument 'val' and return the result", () => {
+                let flag = false;
+                let arg = new command.Argument("foobar", x => {
+                    expect(x).to.equal("24");
+                    flag = true;
+                    return parseInt(x);
+                });
+                expect(arg.read("24")).to.equal(24);
+                expect(flag).to.be.true;
+            });
+
+            it("should throw a TypeError if 'val' is not a string", () => {
+                let arg = new command.Argument("foobar", x => {
+                    if (typeof x !== "string") {
+                        throw new Error("unexpected call");
+                    }
+                });
+                function call(val) {
+                    return () => {
+                        arg.read(val);
+                    };
+                }
+
+                expect(call("foobar")).not.to.throw(TypeError);
+
+                expect(call(null)).to.throw(TypeError);
+                expect(call(undefined)).to.throw(TypeError);
+                expect(call(3.14)).to.throw(TypeError);
+                expect(call(true)).to.throw(TypeError);
+                expect(call({})).to.throw(TypeError);
+                expect(call(() => {})).to.throw(TypeError);
+            });
+        })
     });
 
     describe("OptionalArgument", () => {

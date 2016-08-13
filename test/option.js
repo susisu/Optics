@@ -87,6 +87,42 @@ describe("option", () => {
                 expect(() => { optarg.getDefaultValue(); }).to.throw(Error);
             });
         });
+
+        describe("#read(val, accum)", () => {
+            it("should call 'reader' with arguments 'val' and 'accum', and return the result", () => {
+                let flag = true;
+                let optarg = new option.OptionArgument("test", (x, acc) => {
+                    expect(x).to.equal("24");
+                    expect(acc).to.equal(12);
+                    flag = true;
+                    return parseInt(x) + acc;
+                });
+                expect(optarg.read("24", 12)).to.equal(36);
+                expect(flag).to.be.true;
+            });
+
+            it("should throw a TypeError if 'val' is not a string", () => {
+                let optarg = new option.OptionArgument("test", (x, acc) => {
+                    if (typeof x !== "string") {
+                        throw new Error("unexpected call");
+                    }
+                });
+                function call(val) {
+                    return () => {
+                        optarg.read(val, 0);
+                    }
+                }
+
+                expect(call("foobar")).not.to.throw(TypeError);
+
+                expect(call(null)).to.throw(TypeError);
+                expect(call(undefined)).to.throw(TypeError);
+                expect(call(3.14)).to.throw(TypeError);
+                expect(call(true)).to.throw(TypeError);
+                expect(call({})).to.throw(TypeError);
+                expect(call(() => {})).to.throw(TypeError);
+            });
+        });
     });
 
     describe("OptionalOptionArgument", () => {
