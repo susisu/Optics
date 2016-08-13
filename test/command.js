@@ -1029,7 +1029,31 @@ describe("command", () => {
                     let out = new output.Output(
                         _ => { throw new Error("unexpected output"); },
                         mes => {
-                            expect(mes).to.equal("error: missing argument for `--foo`\n");
+                            expect(mes).to.equal("error: missing argument for `-f'\n");
+                            flag = true;
+                        }
+                    );
+                    cmd.run(out, ["-f"]);
+                    expect(flag).to.be.true;
+                }
+                {
+                    let flag = false;
+                    let cmd = new command.Command(
+                        "test command",
+                        [],
+                        [
+                            new option.Option(
+                                "f", "foo",
+                                new option.OptionArgument("bar", x => x),
+                                "foobar"
+                            )
+                        ],
+                        (args, opts) => { throw new Error("unexpected call"); }
+                    );
+                    let out = new output.Output(
+                        _ => { throw new Error("unexpected output"); },
+                        mes => {
+                            expect(mes).to.equal("error: missing argument for `--foo'\n");
                             flag = true;
                         }
                     );
