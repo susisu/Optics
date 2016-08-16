@@ -54,13 +54,6 @@ describe("command", () => {
             });
         });
 
-        describe("#isRequired()", () => {
-            it("should always return true", () => {
-                let arg = new command.Argument("foobar", x => x);
-                expect(arg.isRequired()).to.be.true;
-            });
-        });
-
         describe("#toPlaceholder()", () => {
             it("should return the name wrapped by angles < and >", () => {
                 {
@@ -71,13 +64,6 @@ describe("command", () => {
                     let arg = new command.Argument("nyancat", x => x);
                     expect(arg.toPlaceholder()).to.equal("<nyancat>");
                 }
-            });
-        });
-
-        describe("#getDefaultValue()", () => {
-            it("should throw an error", () => {
-                let arg = new command.Argument("foobar", x => x);
-                expect(() => { arg.getDefaultValue(); }).to.throw(Error);
             });
         });
 
@@ -158,13 +144,6 @@ describe("command", () => {
             });
         });
 
-        describe("#isRequired()", () => {
-            it("should always return false", () => {
-                let arg = new command.OptionalArgument("foobar", "none", x => x);
-                expect(arg.isRequired()).to.be.false;
-            });
-        });
-
         describe("#toPlaceholder()", () => {
             it("should return the name wrapped by brackets [ and ]", () => {
                 {
@@ -174,19 +153,6 @@ describe("command", () => {
                 {
                     let arg = new command.OptionalArgument("nyancat", "none", x => x);
                     expect(arg.toPlaceholder()).to.equal("[nyancat]");
-                }
-            });
-        });
-
-        describe("#getDefaultValue()", () => {
-            it("should return the default value specified at a constructor", () => {
-                {
-                    let arg = new command.OptionalArgument("foobar", "none", x => x);
-                    expect(arg.getDefaultValue()).to.equal("none");
-                }
-                {
-                    let arg = new command.OptionalArgument("foobar", 3.14, x => x);
-                    expect(arg.getDefaultValue()).to.equal(3.14);
                 }
             });
         });
@@ -1318,18 +1284,6 @@ describe("command", () => {
                 expect(construct(3.14)).to.throw(TypeError);
                 expect(construct(true)).to.throw(TypeError);
                 expect(construct({})).to.throw(TypeError);
-            });
-        });
-
-        describe("#isSpecial()", () => {
-            it("should always return true", () => {
-                let spopt = new command.SpecialOption(
-                    "t", "test",
-                    new option.OptionArgument("nyan", x => x),
-                    "test option",
-                    (cmd, out, arg) => {}
-                );
-                expect(spopt.isSpecial()).to.be.true;
             });
         });
 

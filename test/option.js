@@ -48,13 +48,6 @@ describe("option", () => {
             });
         });
 
-        describe("#isRequired()", () => {
-            it("should always return true", () => {
-                let optarg = new option.OptionArgument("test", x => x);
-                expect(optarg.isRequired()).to.be.true;
-            });
-        });
-
         describe("#toShortPlaceholder()", () => {
             it("should return the name", () => {
                 {
@@ -78,13 +71,6 @@ describe("option", () => {
                     let optarg = new option.OptionArgument("nyan", x => x);
                     expect(optarg.toLongPlaceholder()).to.equal("=nyan");
                 }
-            });
-        });
-
-        describe("#getDefaultValue()", () => {
-            it("should throw an error", () => {
-                let optarg = new option.OptionArgument("test", x => x);
-                expect(() => { optarg.getDefaultValue(); }).to.throw(Error);
             });
         });
 
@@ -162,13 +148,6 @@ describe("option", () => {
             });
         });
 
-        describe("#isRequired()", () => {
-            it("should always return false", () => {
-                let optarg = new option.OptionalOptionArgument("test", "none", x => x);
-                expect(optarg.isRequired()).to.be.false;
-            });
-        });
-
         describe("#toShortPlaceholder()", () => {
             it("should return the name wrapped by brackets [ and ]", () => {
                 {
@@ -191,19 +170,6 @@ describe("option", () => {
                 {
                     let optarg = new option.OptionalOptionArgument("nyan", "none", x => x);
                     expect(optarg.toLongPlaceholder()).to.equal("[=nyan]");
-                }
-            });
-        });
-
-        describe("#getDefaultValue()", () => {
-            it("should return the default value specified at a constructor", () => {
-                {
-                    let optarg = new option.OptionalOptionArgument("test", "none", x => x);
-                    expect(optarg.getDefaultValue()).to.equal("none");
-                }
-                {
-                    let optarg = new option.OptionalOptionArgument("nyan", 3.14, x => x);
-                    expect(optarg.getDefaultValue()).to.equal(3.14);
                 }
             });
         });
@@ -335,17 +301,6 @@ describe("option", () => {
                 expect(construct(3.14)).to.throw(TypeError);
                 expect(construct(true)).to.throw(TypeError);
                 expect(construct({})).to.throw(TypeError);
-            });
-        });
-
-        describe("#isSpecial()", () => {
-            it("should always return false", () => {
-                let opt = new option.Option(
-                    "t", "test",
-                    new option.OptionArgument("nyan", x => x),
-                    "test option"
-                );
-                expect(opt.isSpecial()).to.be.false;
             });
         });
     });
