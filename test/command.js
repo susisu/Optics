@@ -343,7 +343,34 @@ describe("command", () => {
             });
         });
 
-        describe("#run(out, argv)", () => {
+        describe("#run(cmdName, out, argv)", () => {
+            it("should throw a TypeError if 'cmdName' is not a string", () => {
+                let cmd = new command.Command(
+                    "test command",
+                    [],
+                    [],
+                    (args, opts) => {}
+                );
+                let out = new output.Output(
+                    _ => { throw new Error("unexpected output"); },
+                    _ => { throw new Error("unexpected output"); }
+                );
+                function call(cmdName) {
+                    return () => {
+                        cmd.run(cmdName, out, []);
+                    };
+                }
+
+                expect(call("test")).not.to.throw(TypeError);
+
+                expect(call(null)).to.throw(TypeError);
+                expect(call(undefined)).to.throw(TypeError);
+                expect(call(3.14)).to.throw(TypeError);
+                expect(call(true)).to.throw(TypeError);
+                expect(call({})).to.throw(TypeError);
+                expect(call(() => {})).to.throw(TypeError);
+            });
+
             it("should throw a TypeError if 'out' is not an instance of Output", () => {
                 let cmd = new command.Command(
                     "test command",
@@ -357,7 +384,7 @@ describe("command", () => {
                 );
                 function call(out) {
                     return () => {
-                        cmd.run(out, []);
+                        cmd.run("test", out, []);
                     };
                 }
 
@@ -385,7 +412,7 @@ describe("command", () => {
                 );
                 function call(argv) {
                     return () => {
-                        cmd.run(out, argv);
+                        cmd.run("test", out, argv);
                     };
                 }
 
@@ -420,7 +447,7 @@ describe("command", () => {
                             flag = true;
                         }
                     );
-                    cmd.run(out, []);
+                    cmd.run("test", out, []);
                     expect(flag).to.be.true;
                 }
                 // arguments but ignored, no options
@@ -436,7 +463,7 @@ describe("command", () => {
                             flag = true;
                         }
                     );
-                    cmd.run(out, ["foobar", "nyancat"]);
+                    cmd.run("test", out, ["foobar", "nyancat"]);
                     expect(flag).to.be.true;
                 }
                 // one argument, no options
@@ -454,7 +481,7 @@ describe("command", () => {
                             flag = true;
                         }
                     );
-                    cmd.run(out, ["foobar", "nyancat"]);
+                    cmd.run("test", out, ["foobar", "nyancat"]);
                     expect(flag).to.be.true;
                 }
                 // multiple arguments, no options
@@ -477,7 +504,7 @@ describe("command", () => {
                                 flag = true;
                             }
                         );
-                        cmd.run(out, ["foobar"]);
+                        cmd.run("test", out, ["foobar"]);
                         expect(flag).to.be.true;
                     }
                     {
@@ -498,7 +525,7 @@ describe("command", () => {
                                 flag = true;
                             }
                         );
-                        cmd.run(out, ["foobar", "24"]);
+                        cmd.run("test", out, ["foobar", "24"]);
                         expect(flag).to.be.true;
                     }
                 }
@@ -516,7 +543,7 @@ describe("command", () => {
                                 flag = true;
                             }
                         );
-                        cmd.run(out, []);
+                        cmd.run("test", out, []);
                         expect(flag).to.be.true;
                     }
                     {
@@ -531,7 +558,7 @@ describe("command", () => {
                                 flag = true;
                             }
                         );
-                        cmd.run(out, ["-t"]);
+                        cmd.run("test", out, ["-t"]);
                         expect(flag).to.be.true;
                     }
                     {
@@ -546,7 +573,7 @@ describe("command", () => {
                                 flag = true;
                             }
                         );
-                        cmd.run(out, ["--test"]);
+                        cmd.run("test", out, ["--test"]);
                         expect(flag).to.be.true;
                     }
                     {
@@ -561,7 +588,7 @@ describe("command", () => {
                                 flag = true;
                             }
                         );
-                        cmd.run(out, ["-t"]);
+                        cmd.run("test", out, ["-t"]);
                         expect(flag).to.be.true;
                     }
                 }
@@ -585,7 +612,7 @@ describe("command", () => {
                                 flag = true;
                             }
                         );
-                        cmd.run(out, ["-tbar"]);
+                        cmd.run("test", out, ["-tbar"]);
                         expect(flag).to.be.true;
                     }
                     {
@@ -606,7 +633,7 @@ describe("command", () => {
                                 flag = true;
                             }
                         );
-                        cmd.run(out, ["-t", "bar"]);
+                        cmd.run("test", out, ["-t", "bar"]);
                         expect(flag).to.be.true;
                     }
                     {
@@ -627,7 +654,7 @@ describe("command", () => {
                                 flag = true;
                             }
                         );
-                        cmd.run(out, ["--test=bar"]);
+                        cmd.run("test", out, ["--test=bar"]);
                         expect(flag).to.be.true;
                     }
                     {
@@ -648,7 +675,7 @@ describe("command", () => {
                                 flag = true;
                             }
                         );
-                        cmd.run(out, ["--test", "bar"]);
+                        cmd.run("test", out, ["--test", "bar"]);
                         expect(flag).to.be.true;
                     }
                     {
@@ -669,7 +696,7 @@ describe("command", () => {
                                 flag = true;
                             }
                         );
-                        cmd.run(out, ["-tbar"]);
+                        cmd.run("test", out, ["-tbar"]);
                         expect(flag).to.be.true;
                     }
                 }
@@ -693,7 +720,7 @@ describe("command", () => {
                                 flag = true;
                             }
                         );
-                        cmd.run(out, ["-tbar"]);
+                        cmd.run("test", out, ["-tbar"]);
                         expect(flag).to.be.true;
                     }
                     {
@@ -714,7 +741,7 @@ describe("command", () => {
                                 flag = true;
                             }
                         );
-                        cmd.run(out, ["-t", "bar"]);
+                        cmd.run("test", out, ["-t", "bar"]);
                         expect(flag).to.be.true;
                     }
                     {
@@ -735,7 +762,7 @@ describe("command", () => {
                                 flag = true;
                             }
                         );
-                        cmd.run(out, ["--test=bar"]);
+                        cmd.run("test", out, ["--test=bar"]);
                         expect(flag).to.be.true;
                     }
                     {
@@ -756,7 +783,7 @@ describe("command", () => {
                                 flag = true;
                             }
                         );
-                        cmd.run(out, ["--test", "bar"]);
+                        cmd.run("test", out, ["--test", "bar"]);
                         expect(flag).to.be.true;
                     }
                     {
@@ -777,7 +804,7 @@ describe("command", () => {
                                 flag = true;
                             }
                         );
-                        cmd.run(out, ["-tbar"]);
+                        cmd.run("test", out, ["-tbar"]);
                         expect(flag).to.be.true;
                     }
                 }
@@ -806,7 +833,7 @@ describe("command", () => {
                                 flag = true;
                             }
                         );
-                        cmd.run(out, ["-st"]);
+                        cmd.run("test", out, ["-st"]);
                         expect(flag).to.be.true;
                     }
                     {
@@ -841,7 +868,7 @@ describe("command", () => {
                                 flag = true;
                             }
                         );
-                        cmd.run(out, ["--nyan=cat", "-tfBAR"]);
+                        cmd.run("test", out, ["--nyan=cat", "-tfBAR"]);
                         expect(flag).to.be.true;
                     }
                     {
@@ -864,7 +891,7 @@ describe("command", () => {
                                 flag = true;
                             }
                         );
-                        cmd.run(out, ["--foo=1", "--foo=2", "--foo=3"]);
+                        cmd.run("test", out, ["--foo=1", "--foo=2", "--foo=3"]);
                         expect(flag).to.be.true;
                     }
                 }
@@ -912,7 +939,7 @@ describe("command", () => {
                             flag = true;
                         }
                     );
-                    cmd.run(out, ["-s", "--foo", "BAR", "foobar.txt", "--nyan", "24"]);
+                    cmd.run("test", out, ["-s", "--foo", "BAR", "foobar.txt", "--nyan", "24"]);
                     expect(flag).to.be.true;
                 }
             });
@@ -937,7 +964,7 @@ describe("command", () => {
                             flag = true;
                         }
                     );
-                    cmd.run(out, ["foobar.txt"]);
+                    cmd.run("test", out, ["foobar.txt"]);
                     expect(flag).to.be.true;
                 }
                 // unknown option
@@ -956,7 +983,7 @@ describe("command", () => {
                             flag = true;
                         }
                     );
-                    cmd.run(out, ["-n"]);
+                    cmd.run("test", out, ["-n"]);
                     expect(flag).to.be.true;
                 }
                 {
@@ -974,7 +1001,7 @@ describe("command", () => {
                             flag = true;
                         }
                     );
-                    cmd.run(out, ["--nyan"]);
+                    cmd.run("test", out, ["--nyan"]);
                     expect(flag).to.be.true;
                 }
                 // missing option argument
@@ -999,7 +1026,7 @@ describe("command", () => {
                             flag = true;
                         }
                     );
-                    cmd.run(out, ["-f"]);
+                    cmd.run("test", out, ["-f"]);
                     expect(flag).to.be.true;
                 }
                 {
@@ -1023,7 +1050,7 @@ describe("command", () => {
                             flag = true;
                         }
                     );
-                    cmd.run(out, ["--foo"]);
+                    cmd.run("test", out, ["--foo"]);
                     expect(flag).to.be.true;
                 }
             });
@@ -1052,8 +1079,9 @@ describe("command", () => {
                                 "n", "nyan",
                                 new option.OptionArgument("name", x => x.toUpperCase()),
                                 "nyancat",
-                                (_cmd, _out, arg) => {
+                                (_cmd, _cmdName, _out, arg) => {
                                     expect(_cmd).to.equal(cmd);
+                                    expect(_cmdName).to.equal("test");
                                     expect(_out).to.equal(out);
                                     expect(arg).to.equal("CAT");
                                 }
@@ -1076,7 +1104,7 @@ describe("command", () => {
                         _ => { throw new Error("unexpected output"); },
                         _ => { throw new Error("unexpected output"); }
                     );
-                    cmd.run(out, ["foobar.txt", "--foo", "FOO", "--nyan", "cat" , "--bar", "BAR", "24"]);
+                    cmd.run("test", out, ["foobar.txt", "--foo", "FOO", "--nyan", "cat" , "--bar", "BAR", "24"]);
                     expect(flag).to.be.true;
                 }
                 {
@@ -1102,8 +1130,9 @@ describe("command", () => {
                                 "n", "nyan",
                                 new option.OptionArgument("name", x => x.toUpperCase()),
                                 "nyancat",
-                                (_cmd, _out, arg) => {
+                                (_cmd, _cmdName, _out, arg) => {
                                     expect(_cmd).to.equal(cmd);
+                                    expect(_cmdName).to.equal("e e l");
                                     expect(_out).to.equal(out);
                                     expect(arg).to.equal("CAT");
                                     flag = true;
@@ -1117,7 +1146,7 @@ describe("command", () => {
                         _ => { throw new Error("unexpected output"); },
                         _ => { throw new Error("unexpected output"); }
                     );
-                    cmd.run(out, ["foobar.txt", "--foo", "FOO", "--nyan", "cat" , "--bar", "BAR", "24"]);
+                    cmd.run("e e l", out, ["foobar.txt", "--foo", "FOO", "--nyan", "cat" , "--bar", "BAR", "24"]);
                     expect(flag).to.be.true;
                 }
             });
@@ -1287,13 +1316,13 @@ describe("command", () => {
             });
         });
 
-        describe("#invoke(cmd, out, arg)", () => {
+        describe("#invoke(cmd, cmdName, out, arg)", () => {
             it("should call the action of the option with arguments 'cmd', 'out', and 'arg'", () => {
                 let spopt = new command.SpecialOption(
                     "t", "test",
                     new option.OptionArgument("nyan", x => x),
                     "test option",
-                    (cmd, out, arg) => [cmd, out, arg]
+                    (cmd, cmdName, out, arg) => [cmd, cmdName, out, arg]
                 );
                 let cmd = new command.Command(
                     "test command",
@@ -1305,8 +1334,8 @@ describe("command", () => {
                     _ => { throw new Error("unexpected output"); },
                     _ => { throw new Error("unexpected output"); }
                 );
-                expect(spopt.invoke(cmd, out, "foobar")).to.deep.equal([cmd, out, "foobar"]);
-                expect(spopt.invoke(cmd, out, 3.14)).to.deep.equal([cmd, out, 3.14]);
+                expect(spopt.invoke(cmd, "test", out, "foobar")).to.deep.equal([cmd, "test", out, "foobar"]);
+                expect(spopt.invoke(cmd, "nyancat", out, 3.14)).to.deep.equal([cmd, "nyancat", out, 3.14]);
             });
 
             it("should throw a TypeError if 'cmd' is not an instance of CommandBase", () => {
@@ -1314,7 +1343,7 @@ describe("command", () => {
                     "t", "test",
                     new option.OptionArgument("nyan", x => x),
                     "test option",
-                    (cmd, out, arg) => [cmd, out, arg]
+                    (cmd, cmdName, out, arg) => [cmd, cmdName, out, arg]
                 );
                 let cmd = new command.Command(
                     "test command",
@@ -1328,7 +1357,7 @@ describe("command", () => {
                 );
                 function call(cmd) {
                     return () => {
-                        spopt.invoke(cmd, out, "foobar");
+                        spopt.invoke(cmd, "test", out, "foobar");
                     }
                 }
 
@@ -1343,12 +1372,45 @@ describe("command", () => {
                 expect(call(() => {})).to.throw(TypeError);
             });
 
+            it("should throw a TypeError if 'cmdName' is not a string", () => {
+                let spopt = new command.SpecialOption(
+                    "t", "test",
+                    new option.OptionArgument("nyan", x => x),
+                    "test option",
+                    (cmd, cmdName, out, arg) => [cmd, cmdName, out, arg]
+                );
+                let cmd = new command.Command(
+                    "test command",
+                    [],
+                    [],
+                    (args, opts) => {}
+                );
+                let out = new output.Output(
+                    _ => { throw new Error("unexpected output"); },
+                    _ => { throw new Error("unexpected output"); }
+                );
+                function call(cmdName) {
+                    return () => {
+                        spopt.invoke(cmd, cmdName, out, "foobar");
+                    }
+                }
+
+                expect(call("test")).not.to.throw(TypeError);
+
+                expect(call(null)).to.throw(TypeError);
+                expect(call(undefined)).to.throw(TypeError);
+                expect(call(3.14)).to.throw(TypeError);
+                expect(call(true)).to.throw(TypeError);
+                expect(call({})).to.throw(TypeError);
+                expect(call(() => {})).to.throw(TypeError);
+            });
+
             it("should throw a TypeError if 'out' is not an instance of Output", () => {
                 let spopt = new command.SpecialOption(
                     "t", "test",
                     new option.OptionArgument("nyan", x => x),
                     "test option",
-                    (cmd, out, arg) => [cmd, out, arg]
+                    (cmd, cmdName, out, arg) => [cmd, cmdName, out, arg]
                 );
                 let cmd = new command.Command(
                     "test command",
@@ -1362,7 +1424,7 @@ describe("command", () => {
                 );
                 function call(out) {
                     return () => {
-                        spopt.invoke(cmd, out, "foobar");
+                        spopt.invoke(cmd, "test", out, "foobar");
                     }
                 }
 
