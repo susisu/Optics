@@ -166,14 +166,14 @@ describe("command", () => {
             });
         });
 
-        describe("#run(out, argv)", () => {
+        describe("#run(cmdName, out, argv)", () => {
             it("should throw an Error", () => {
                 let out = new output.Output(
                     _ => { throw new Error("unexpected output"); },
                     _ => { throw new Error("unexpected output"); }
                 );
                 let cmd = new command.CommandBase();
-                expect(() => { cmd.run(out, []); }).to.throw(Error);
+                expect(() => { cmd.run("test", out, []); }).to.throw(Error);
             });
         });
     });
