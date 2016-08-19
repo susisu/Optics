@@ -158,5 +158,14 @@ describe("subcommand", () => {
                 expect(construct(() => {})).to.throw(TypeError);
             });
         });
+
+        describe("run(cmdName, out, argv)", () => {
+            it("should throw a TypeError if 'cmdName' is not a string");
+            it("should throw a TypeError if 'out' is not an instance of Output");
+            it("should throw a TypeError if 'argv' is not an array of string");
+            it("should run a corresponding subcommand");
+            it("should run the default command if it exists and subcommand name is unspecified");
+            it("should call 'out.err' with error message if subcommand name and default command are unspecified");
+        });
     });
 });
