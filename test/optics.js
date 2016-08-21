@@ -10,4 +10,5 @@ describe("optics", () => {
     require("./command.js");
     require("./subcommand.js");
     require("./output.js");
+    require("./help.js");
 });
