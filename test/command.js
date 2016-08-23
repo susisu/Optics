@@ -166,6 +166,13 @@ describe("command", () => {
             });
         });
 
+        describe("#generateHelpText(cmdName)", () => {
+            it("should throw an Error", () => {
+                let cmd = new command.CommandBase();
+                expect(() => { cmd.generateHelpText("test"); }).to.throw(Error);
+            });
+        });
+
         describe("#run(cmdName, out, argv)", () => {
             it("should throw an Error", () => {
                 let out = new output.Output(
