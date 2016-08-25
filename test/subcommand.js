@@ -10,6 +10,7 @@ const expect = chai.expect;
 
 const command    = require("../lib/command.js");
 const subcommand = require("../lib/subcommand.js");
+const output     = require("../lib/output.js");
 
 describe("subcommand", () => {
     describe("Subcommand", () => {
@@ -160,9 +161,98 @@ describe("subcommand", () => {
         });
 
         describe("run(cmdName, out, argv)", () => {
-            it("should throw a TypeError if 'cmdName' is not a string");
-            it("should throw a TypeError if 'out' is not an instance of Output");
-            it("should throw a TypeError if 'argv' is not an array of string");
+            it("should throw a TypeError if 'cmdName' is not a string", () => {
+                let cmd = new command.Command(
+                    "test command",
+                    [],
+                    [],
+                    (args, opts) => {}
+                );
+                let subcmd = new subcommand.Subcommand("test", cmd);
+                let group = new subcommand.CommandGroup("test group", [subcmd], cmd);
+                let out = new output.Output(
+                    _ => { throw new Error("unexpected output"); },
+                    _ => { throw new Error("unexpected output"); }
+                );
+                function call(cmdName) {
+                    return () => {
+                        group.run(cmdName, out, [])
+                    };
+                }
+
+                expect(call("test")).not.to.throw(TypeError);
+
+                expect(call(null)).to.throw(TypeError);
+                expect(call(undefined)).to.throw(TypeError);
+                expect(call(3.14)).to.throw(TypeError);
+                expect(call(true)).to.throw(TypeError);
+                expect(call({})).to.throw(TypeError);
+                expect(call(() => {})).to.throw(TypeError);
+            });
+
+            it("should throw a TypeError if 'out' is not an instance of Output", () => {
+                let cmd = new command.Command(
+                    "test command",
+                    [],
+                    [],
+                    (args, opts) => {}
+                );
+                let subcmd = new subcommand.Subcommand("test", cmd);
+                let group = new subcommand.CommandGroup("test group", [subcmd], cmd);
+                let out = new output.Output(
+                    _ => { throw new Error("unexpected output"); },
+                    _ => { throw new Error("unexpected output"); }
+                );
+                function call(out) {
+                    return () => {
+                        group.run("test", out, [])
+                    };
+                }
+
+                expect(call(out)).not.to.throw(TypeError);
+
+                expect(call(null)).to.throw(TypeError);
+                expect(call(undefined)).to.throw(TypeError);
+                expect(call("foobar")).to.throw(TypeError);
+                expect(call(3.14)).to.throw(TypeError);
+                expect(call(true)).to.throw(TypeError);
+                expect(call({})).to.throw(TypeError);
+                expect(call(() => {})).to.throw(TypeError);
+            });
+
+            it("should throw a TypeError if 'argv' is not an array of string", () => {
+                let cmd = new command.Command(
+                    "test command",
+                    [],
+                    [],
+                    (args, opts) => {}
+                );
+                let subcmd = new subcommand.Subcommand("test", cmd);
+                let group = new subcommand.CommandGroup("test group", [subcmd], cmd);
+                let out = new output.Output(
+                    _ => { throw new Error("unexpected output"); },
+                    _ => { throw new Error("unexpected output"); }
+                );
+                function call(argv) {
+                    return () => {
+                        group.run("test", out, argv)
+                    };
+                }
+
+                expect(call([])).not.to.throw(TypeError);
+                expect(call(["nyan"])).not.to.throw(TypeError);
+                expect(call(["nyan", "cat"])).not.to.throw(TypeError);
+
+                expect(call(null)).to.throw(TypeError);
+                expect(call(undefined)).to.throw(TypeError);
+                expect(call("foobar")).to.throw(TypeError);
+                expect(call(3.14)).to.throw(TypeError);
+                expect(call(true)).to.throw(TypeError);
+                expect(call({})).to.throw(TypeError);
+                expect(call(() => {})).to.throw(TypeError);
+                expect(call(["nyancat", 3.14, true])).to.throw(TypeError);
+            });
+
             it("should run a corresponding subcommand");
             it("should run the default command if it exists and subcommand name is unspecified");
             it("should call 'out.err' with error message if subcommand name and default command are unspecified");
