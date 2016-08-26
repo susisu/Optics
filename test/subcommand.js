@@ -8,6 +8,7 @@
 const chai   = require("chai");
 const expect = chai.expect;
 
+const option     = require("../lib/option.js");
 const command    = require("../lib/command.js");
 const subcommand = require("../lib/subcommand.js");
 const output     = require("../lib/output.js");
@@ -253,9 +254,193 @@ describe("subcommand", () => {
                 expect(call(["nyancat", 3.14, true])).to.throw(TypeError);
             });
 
-            it("should run a corresponding subcommand");
-            it("should run the default command if it exists and subcommand name is unspecified");
-            it("should call 'out.err' with error message if subcommand name and default command are unspecified");
+            it("should run a corresponding subcommand", () => {
+                let flag = false;
+                let cmdA = new command.Command(
+                    "foobar command",
+                    [
+                        new command.Argument("filename", x => x),
+                        new command.OptionalArgument("num", 1, x => parseInt(x))
+                    ],
+                    [
+                        new option.Option(
+                            "s", undefined,
+                            null,
+                            "test1"
+                        ),
+                        new option.Option(
+                            "t", undefined,
+                            null,
+                            "test2"
+                        ),
+                        new option.Option(
+                            "f", "foo",
+                            new option.OptionArgument("bar", x => x.toLowerCase()),
+                            "foobar"
+                        ),
+                        new option.Option(
+                            "n", "nyan",
+                            new option.OptionalOptionArgument("cat", "DOG", x => x.toUpperCase()),
+                            "nyancat"
+                        )
+                    ],
+                    (args, opts) => {
+                        expect(args).to.deep.equal({
+                            filename: "foobar.txt",
+                            num     : 24
+                        });
+                        expect(opts).to.deep.equal({
+                            s   : true,
+                            foo : "bar",
+                            nyan: "DOG"
+                        });
+                        flag = true;
+                    }
+                );
+                let cmdB = new command.Command(
+                    "nyancat command",
+                    [],
+                    [],
+                    (args, opts) => { throw new Error("unexpected call"); }
+                );
+                let cmdC = new command.Command(
+                    "default command",
+                    [],
+                    [],
+                    (args, opts) => { throw new Error("unexpected call"); }
+                );
+                let subcmdA = new subcommand.Subcommand("foobar", cmdA);
+                let subcmdB = new subcommand.Subcommand("nyancat", cmdB);
+                let group = new subcommand.CommandGroup("test group", [subcmdA, subcmdB], cmdC);
+                let out = new output.Output(
+                    _ => { throw new Error("unexpected output"); },
+                    _ => { throw new Error("unexpected output"); }
+                );
+                expect(group.run("test", out, ["foobar", "-s", "--foo", "BAR", "foobar.txt", "--nyan", "24"]));
+                expect(flag).to.be.true;
+            });
+
+            it("should run the default command if it exists and subcommand name is unspecified", () => {
+                let flag = false;
+                let cmdA = new command.Command(
+                    "foobar command",
+                    [],
+                    [],
+                    (args, opts) => { throw new Error("unexpected call"); }
+                );
+                let cmdB = new command.Command(
+                    "nyancat command",
+                    [],
+                    [],
+                    (args, opts) => { throw new Error("unexpected call"); }
+                );
+                let cmdC = new command.Command(
+                    "default command",
+                    [
+                        new command.Argument("filename", x => x),
+                        new command.OptionalArgument("num", 1, x => parseInt(x))
+                    ],
+                    [
+                        new option.Option(
+                            "s", undefined,
+                            null,
+                            "test1"
+                        ),
+                        new option.Option(
+                            "t", undefined,
+                            null,
+                            "test2"
+                        ),
+                        new option.Option(
+                            "f", "foo",
+                            new option.OptionArgument("bar", x => x.toLowerCase()),
+                            "foobar"
+                        ),
+                        new option.Option(
+                            "n", "nyan",
+                            new option.OptionalOptionArgument("cat", "DOG", x => x.toUpperCase()),
+                            "nyancat"
+                        )
+                    ],
+                    (args, opts) => {
+                        expect(args).to.deep.equal({
+                            filename: "foobar.txt",
+                            num     : 24
+                        });
+                        expect(opts).to.deep.equal({
+                            s   : true,
+                            foo : "bar",
+                            nyan: "DOG"
+                        });
+                        flag = true;
+                    }
+                );
+                let subcmdA = new subcommand.Subcommand("foobar", cmdA);
+                let subcmdB = new subcommand.Subcommand("nyancat", cmdB);
+                let group = new subcommand.CommandGroup("test group", [subcmdA, subcmdB], cmdC);
+                let out = new output.Output(
+                    _ => { throw new Error("unexpected output"); },
+                    _ => { throw new Error("unexpected output"); }
+                );
+                expect(group.run("test", out, ["foobar.txt", "-s", "--foo", "BAR", "--nyan", "24"]));
+                expect(flag).to.be.true;
+            });
+
+            it("should call 'out.err' with error message if subcommand name and default command are not specified", () => {
+                let flag = false;
+                let cmdA = new command.Command(
+                    "foobar command",
+                    [],
+                    [],
+                    (args, opts) => { throw new Error("unexpected call"); }
+                );
+                let cmdB = new command.Command(
+                    "nyancat command",
+                    [],
+                    [],
+                    (args, opts) => { throw new Error("unexpected call"); }
+                );
+                let subcmdA = new subcommand.Subcommand("foobar", cmdA);
+                let subcmdB = new subcommand.Subcommand("nyancat", cmdB);
+                let group = new subcommand.CommandGroup("test group", [subcmdA, subcmdB], null);
+                let out = new output.Output(
+                    _ => { throw new Error("unexpected output"); },
+                    msg => {
+                        expect(msg).to.equal("error: missing subcommand name");
+                        flag = true;
+                    }
+                );
+                expect(group.run("test", out, []));
+                expect(flag).to.be.true;
+            });
+
+            it("shoud call 'out.err' with error message if subcommand name is unknown and default command is not specified", () => {
+                let flag = false;
+                let cmdA = new command.Command(
+                    "foobar command",
+                    [],
+                    [],
+                    (args, opts) => { throw new Error("unexpected call"); }
+                );
+                let cmdB = new command.Command(
+                    "nyancat command",
+                    [],
+                    [],
+                    (args, opts) => { throw new Error("unexpected call"); }
+                );
+                let subcmdA = new subcommand.Subcommand("foobar", cmdA);
+                let subcmdB = new subcommand.Subcommand("nyancat", cmdB);
+                let group = new subcommand.CommandGroup("test group", [subcmdA, subcmdB], null);
+                let out = new output.Output(
+                    _ => { throw new Error("unexpected output"); },
+                    msg => {
+                        expect(msg).to.equal("error: unknown subcommand name `piyo'");
+                        flag = true;
+                    }
+                );
+                expect(group.run("test", out, ["piyo"]));
+                expect(flag).to.be.true;
+            });
         });
     });
 });
