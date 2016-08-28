@@ -350,6 +350,98 @@ describe("command", () => {
             });
         });
 
+        describe("#generateHelpText(cmdName)", () => {
+            it("should throw a TypeError if 'cmdName' is not a string", () => {
+                let cmd = new command.Command(
+                    "test command",
+                    [],
+                    [],
+                    (args, opts) => {}
+                );
+                function call(cmdName) {
+                    return () => {
+                        cmd.generateHelpText(cmdName);
+                    };
+                }
+
+                expect(call("test")).not.to.throw(TypeError);
+
+                expect(call(null)).to.throw(TypeError);
+                expect(call(undefined)).to.throw(TypeError);
+                expect(call(3.14)).to.throw(TypeError);
+                expect(call(true)).to.throw(TypeError);
+                expect(call({})).to.throw(TypeError);
+                expect(call(() => {})).to.throw(TypeError);
+            });
+
+            it("should generates formatted help text of the command", () => {
+                // no options, no arguments
+                {
+                    let cmd = new command.Command(
+                        "test command",
+                        [],
+                        [],
+                        (args, opts) => {}
+                    );
+                    expect(cmd.generateHelpText("test")).to.equal(
+`
+  test command
+
+  Usage: test
+
+`
+                    );
+                }
+                // some options and arguments
+                {
+                    let cmd = new command.Command(
+                        "All your base are belonging to us",
+                        [
+                            new command.Argument("filename", x => x),
+                            new command.OptionalArgument("num", 1, x => parseInt(x))
+                        ],
+                        [
+                            new option.Option(
+                                "s", undefined,
+                                null,
+                                "test1"
+                            ),
+                            new option.Option(
+                                undefined, "ttt",
+                                null,
+                                "test2"
+                            ),
+                            new option.Option(
+                                "f", "foo",
+                                new option.OptionArgument("bar", x => x.toLowerCase()),
+                                "foobar"
+                            ),
+                            new option.Option(
+                                "n", "nyan",
+                                new option.OptionalOptionArgument("cat", "DOG", x => x.toUpperCase()),
+                                "nyancat"
+                            )
+                        ],
+                        (args, opts) => {}
+                    );
+                    expect(cmd.generateHelpText("abc")).to.equal(
+`
+  All your base are belonging to us
+
+  Usage: abc <filename> [num]
+
+  Options:
+    -s                     test1
+    --ttt                  test2
+    -f<bar>, --foo=<bar>   foobar
+    -n[cat], --nyan[=cat]  nyancat
+
+`
+                    );
+                }
+            });
+        });
+
         describe("#run(cmdName, out, argv)", () => {
             it("should throw a TypeError if 'cmdName' is not a string", () => {
                 let cmd = new command.Command(
