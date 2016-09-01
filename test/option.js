@@ -303,5 +303,73 @@ describe("option", () => {
                 expect(construct({})).to.throw(TypeError);
             });
         });
+
+        describe("#toDescriptor()", () => {
+            it("should return descriptor string of the option", () => {
+                // only short name
+                {
+                    // required argument
+                    {
+                        let opt = new option.Option(
+                            "t", undefined,
+                            new option.OptionArgument("nyan", x => x),
+                            "test option"
+                        );
+                        expect(opt.toDescriptor()).to.equal("-t<nyan>");
+                    }
+                    // optional argument
+                    {
+                        let opt = new option.Option(
+                            "t", undefined,
+                            new option.OptionalOptionArgument("nyan", "cat", x => x),
+                            "test option"
+                        );
+                        expect(opt.toDescriptor()).to.equal("-t[nyan]");
+                    }
+                }
+                // only long name
+                {
+                    // required argument
+                    {
+                        let opt = new option.Option(
+                            undefined, "test",
+                            new option.OptionArgument("nyan", x => x),
+                            "test option"
+                        );
+                        expect(opt.toDescriptor()).to.equal("--test=<nyan>");
+                    }
+                    // optional argument
+                    {
+                        let opt = new option.Option(
+                            undefined, "test",
+                            new option.OptionalOptionArgument("nyan", "cat", x => x),
+                            "test option"
+                        );
+                        expect(opt.toDescriptor()).to.equal("--test[=nyan]");
+                    }
+                }
+                // both
+                {
+                    // required argument
+                    {
+                        let opt = new option.Option(
+                            "t", "test",
+                            new option.OptionArgument("nyan", x => x),
+                            "test option"
+                        );
+                        expect(opt.toDescriptor()).to.equal("-t<nyan>, --test=<nyan>");
+                    }
+                    // optional argument
+                    {
+                        let opt = new option.Option(
+                            "t", "test",
+                            new option.OptionalOptionArgument("nyan", "cat", x => x),
+                            "test option"
+                        );
+                        expect(opt.toDescriptor()).to.equal("-t[nyan], --test[=nyan]");
+                    }
+                }
+            });
+        });
     });
 });
