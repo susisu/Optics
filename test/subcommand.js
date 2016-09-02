@@ -161,6 +161,11 @@ describe("subcommand", () => {
             });
         });
 
+        describe("generateHelpText(cmdName)", () => {
+            it("should throw a TypeError if 'cmdName' is not a string");
+            it("should generates formatted help text of the command");
+        });
+
         describe("run(cmdName, out, argv)", () => {
             it("should throw a TypeError if 'cmdName' is not a string", () => {
                 let cmd = new command.Command(
