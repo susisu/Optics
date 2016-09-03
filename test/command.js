@@ -428,7 +428,7 @@ describe("command", () => {
 `
   All your base are belonging to us
 
-  Usage: abc <filename> [num]
+  Usage: abc [options] <filename> [num]
 
   Options:
     -s                     test1
